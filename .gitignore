@@ -1,0 +1,7 @@
+.haxelib/
+
+dump/
+export/
+
+api-dump.json
+rblx/

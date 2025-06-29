@@ -1,0 +1,7 @@
+-cp tool
+-lib haxe-files
+-lib haxe-strings
+-m Main
+--neko run.n
+--next
+--cmd neko run.n

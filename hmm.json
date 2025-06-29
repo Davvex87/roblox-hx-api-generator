@@ -1,0 +1,19 @@
+{
+  "dependencies": [
+    {
+      "name": "haxe-concurrent",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "haxe-files",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "haxe-strings",
+      "type": "haxelib",
+      "version": null
+    }
+  ]
+}
