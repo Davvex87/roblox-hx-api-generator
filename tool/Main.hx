@@ -15,32 +15,71 @@ final ROBLOX_API_ENDPOINT:String = "https://setup.rbxcdn.com/";
 
 class Main
 {
+	public static var ARGUMENTS = Sys.args();
+
+	static var noPrint:Bool = false;
 	static var outputPath:Path = null;
 
 	static function main()
 	{
-		Sys.println("Choose your desired output destination folder:");
-		Sys.println("  (1) roblox-hx proxy directory");
-		Sys.println("  (2) cwd location");
-		Sys.println("  (3) custom location");
-		Sys.println("  ( ) cancel");
-		Sys.print("\n  > ");
+		trace(ARGUMENTS);
+		if (ARGUMENTS.length > 0)
+		{
+			var path:String = Sys.getCwd();
+			var types:Bool = false;
+
+			for (arg in ARGUMENTS)
+			{
+				switch (arg)
+				{
+					case "--no-print", "-o":
+						noPrint = true;
+					case "--types", "-t":
+						types = true;
+					default:
+						path = arg;
+				}
+			}
+			return runExtraction(Path.of(path), types);
+		}
+
+		println("Choose your desired output destination folder:");
+		println("  (1) roblox-hx proxy directory");
+		println("  (2) cwd location");
+		println("  (3) custom location");
+		println("  ( ) cancel");
+		print("\n  > ");
 
 		switch (Sys.getChar(true))
 		{
 			case '1'.code:
-				outputPath = getLibraryDir("roblox-hx").join("proxy");
+				outputPath = getLibraryDir("roblox-hx").join("src");
 			case '2'.code:
 				outputPath = Dir.getCWD().path;
 			case '3'.code:
 				var inp = Sys.stdin();
-				Sys.print("\nPath: ");
+				print("\nPath: ");
 				var path = inp.readLine();
 				outputPath = Path.of(path.trim());
 			default:
-				Sys.println("\n\nOPERATION CANCELED!");
+				println("\n\nOPERATION CANCELED!");
 				Sys.exit(0);
 		}
+
+		var copyTypes = true;
+		println("\nCopy types definitions to output? (Y/n): ");
+		switch (Sys.getChar(true))
+		{
+			case 'N'.code, 'n'.code, '0'.code, 'f'.code:
+				copyTypes = false;
+		}
+
+		runExtraction(outputPath, copyTypes);
+		return;
+	}
+
+	public static function runExtraction(outputPath:Path, copyTypes:Bool)
+	{
 		if (outputPath == null || !outputPath.exists())
 		{
 			Sys.stderr().writeString("Unable to locate selected path!");
@@ -48,7 +87,13 @@ class Main
 			return;
 		}
 
-		Sys.print("\n\nFetching latest API dump... ");
+		if (noPrint)
+		{
+			print = function(v:Dynamic) {};
+			println = function(v:Dynamic) {};
+		}
+
+		print("\n\nFetching latest API dump... ");
 
 		outputPath.join("rblx").toDir().create();
 
@@ -75,9 +120,32 @@ class Main
 		});
 
 		parseEnums(data);
-		Sys.println("");
+		println("");
 		parseClasses(data);
-		Sys.println("");
+		println("");
+		if (copyTypes)
+			copyTypesToOutput(outputPath);
+		println("Done!");
+
+		return;
+	}
+
+	static function copyTypesToOutput(outputPath:Path)
+	{
+		final dir = Dir.getCWD().path.join("types").toDir();
+		if (!dir.path.exists())
+		{
+			Sys.stderr().writeString("Unable to locate types path, skip!");
+			return;
+		}
+		var lastLen:UInt = 0;
+		var files = dir.listFiles();
+		for (i in 0...files.length)
+		{
+			print('\rCopying types... (${i + 1}/${files.length}) ${formatBytes(lastLen)}    ');
+			files[i].copyTo(outputPath.join("rblx").join(files[i].path.filename), [OVERWRITE]);
+			lastLen += getUtf8Length(files[i].readAsString());
+		}
 	}
 
 	public static function parseClasses(data:Dynamic)
@@ -94,7 +162,7 @@ class Main
 			if (cls.Name == "Studio")
 				continue;
 
-			Sys.print('\rParsing classes... (${i + 1}/${classes.length}) ${formatBytes(lastLen)}    ');
+			print('\rParsing classes... (${i + 1}/${classes.length}) ${formatBytes(lastLen)}    ');
 
 			var pkg:String = "rblx";
 
@@ -118,7 +186,10 @@ class Main
 			stream.add('// ADD IMPORTS HERE\n\n');
 
 			if (pkg.endsWithIgnoreCase("services"))
-				stream.add('@:native("game:GetService(\'${cls.Name}\')")\n');
+			{
+				stream.add('@:native("${cls.Name}")\n');
+				stream.add('@:customImport("game:GetService(\'${cls.Name}\')")\n');
+			}
 
 			if (objTags.contains("Deprecated"))
 				stream.add("@:deprecated\n");
@@ -132,8 +203,8 @@ class Main
 
 			if (pkg.endsWithIgnoreCase("instances") && !objTags.contains("NotCreatable"))
 			{
-				stream.add('\t@:native("INSTANCE_FACTORY.CREATE_OBJ")\n');
-				stream.add('\tpublic extern function new();\n\n');
+				stream.add('\t@:nativeFunctionCode(\'Instance.new("${cls.Name}")\')\n');
+				stream.add('\tpublic function new();\n\n');
 			}
 
 			var clsFields = cls.Members.copy();
@@ -210,7 +281,7 @@ class Main
 						stream.add('${funcParams.join(", ")})->${parseType(mem.ReturnType)};\n\n');
 
 					default:
-						Sys.println('\x1b[33mUnknown member type "${mem.MemberType}", skipping\x1b[0m');
+						println('\x1b[33mUnknown member type "${mem.MemberType}", skipping\x1b[0m');
 				}
 			}
 
@@ -237,7 +308,7 @@ class Main
 			lastLen += getUtf8Length(output);
 		}
 
-		Sys.print('\rParsing classes... (${classes.length}/${classes.length}) ${formatBytes(lastLen)}    ');
+		print('\rParsing classes... (${classes.length}/${classes.length}) ${formatBytes(lastLen)}    ');
 	}
 
 	static function fieldExistsInSuper(classes:Array<ClassObj>, cls:ClassObj, field:String):Bool
@@ -360,7 +431,7 @@ class Main
 		var lastLen:UInt = 0;
 		for (i in 0...enums.length)
 		{
-			Sys.print('\rParsing enums... (${i + 1}/${enums.length}) ${formatBytes(lastLen)}    ');
+			print('\rParsing enums... (${i + 1}/${enums.length}) ${formatBytes(lastLen)}    ');
 
 			var en = enums[i];
 			var stream = new StringBuf();
@@ -397,7 +468,7 @@ class Main
 			lastLen += getUtf8Length(output);
 		}
 
-		Sys.print('\rParsing enums... (${enums.length}/${enums.length}) ${formatBytes(lastLen)}    ');
+		print('\rParsing enums... (${enums.length}/${enums.length}) ${formatBytes(lastLen)}    ');
 	}
 
 	public static function fetchDump(?version:String):String
@@ -414,7 +485,7 @@ class Main
 		if (version == null)
 			version = Http.requestUrl('${ROBLOX_API_ENDPOINT}versionQTStudio');
 
-		Sys.println('($version)');
+		println('($version)');
 
 		var jsonDump = Http.requestUrl('${ROBLOX_API_ENDPOINT}${version}-API-Dump.json');
 
@@ -466,6 +537,12 @@ class Main
 
 		return stringValue + " " + sizes[i];
 	}
+
+	static dynamic function print(v:Dynamic)
+		Sys.print(v);
+
+	static dynamic function println(v:Dynamic)
+		Sys.println(v);
 }
 
 typedef ClassObj =

@@ -1,6 +1,0 @@
--m Main
--cp source
---lua out.lua
---no-output
--lib roblox-hx
---dce no
