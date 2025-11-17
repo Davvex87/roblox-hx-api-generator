@@ -1,5 +1,6 @@
 package;
 
+import Types;
 import sys.io.Process;
 import hx.files.Path;
 import haxe.ds.Either;
@@ -8,6 +9,8 @@ import hx.files.Dir;
 import sys.FileSystem;
 import haxe.Json;
 import sys.Http;
+import Types;
+import preprocessors.*;
 
 using hx.strings.Strings;
 
@@ -19,6 +22,8 @@ class Main
 
 	static var noPrint:Bool = false;
 	static var outputPath:Path = null;
+
+	static var preprocessors:Array<IPreprocessor> = [new MissingOptionals()];
 
 	static function main()
 	{
@@ -97,7 +102,7 @@ class Main
 
 		outputPath.join("rblx").toDir().create();
 
-		var data:Dynamic = Json.parse(fetchDump(null));
+		var data:{Classes:Array<ClassObj>, Enums:Array<EnumObj>, Version:Int} = Json.parse(fetchDump(null));
 
 		// Add custom enums, classes and object members that are not present in the API dump
 		var enums:Array<EnumObj> = cast Reflect.field(data, "Enums");
@@ -119,9 +124,18 @@ class Main
 			Name: "ContentSourceType"
 		});
 
-		parseEnums(data);
+		var classes = data.Classes;
+		var enums = data.Enums;
+
+		for (preprocessor in preprocessors)
+		{
+			println('\nRunning preprocessor: ${Type.getClassName(Type.getClass(preprocessor))}...');
+			preprocessor.build(classes, enums);
+		}
+
+		parseEnums(enums);
 		println("");
-		parseClasses(data);
+		parseClasses(classes);
 		println("");
 		if (copyTypes)
 			copyTypesToOutput(outputPath);
@@ -148,12 +162,10 @@ class Main
 		}
 	}
 
-	public static function parseClasses(data:Dynamic)
+	public static function parseClasses(classes:Array<ClassObj>)
 	{
 		outputPath.joinAll(["rblx", "services"]).toDir().create();
 		outputPath.joinAll(["rblx", "instances"]).toDir().create();
-
-		var classes:Array<ClassObj> = Reflect.field(data, "Classes");
 
 		var lastLen:UInt = 0;
 		for (i in 0...classes.length)
@@ -259,7 +271,7 @@ class Main
 						stream.add('${parseName(mem.Name)}(');
 						var funcParams:Array<String> = [];
 						for (param in mem.Parameters)
-							funcParams.push('${parseName(param.Name)}:${parseType(param.Type)}');
+							funcParams.push('${parseFieldArg(param)}');
 						stream.add('${funcParams.join(", ")}):${parseType(mem.ReturnType)};\n\n');
 
 					case Event:
@@ -268,7 +280,7 @@ class Main
 						stream.add('${parseName(mem.Name)}:RBXScriptSignal<(');
 						var funcParams:Array<String> = [];
 						for (param in mem.Parameters)
-							funcParams.push('${parseName(param.Name)}:${parseType(param.Type)}');
+							funcParams.push('${parseFieldArg(param)}');
 						stream.add('${funcParams.join(", ")})->Void>;\n\n');
 
 					case Callback:
@@ -277,7 +289,7 @@ class Main
 						stream.add('${parseName(mem.Name)}:(');
 						var funcParams:Array<String> = [];
 						for (param in mem.Parameters)
-							funcParams.push('${parseName(param.Name)}:${parseType(param.Type)}');
+							funcParams.push('${parseFieldArg(param)}');
 						stream.add('${funcParams.join(", ")})->${parseType(mem.ReturnType)};\n\n');
 
 					default:
@@ -337,6 +349,18 @@ class Main
 			|| out == "break" || out == "continue" || out == "true" || out == "false" || out == "null" || out == "new" || out == "is")
 			return '${out}_';
 		return out;
+	}
+
+	static function parseFieldArg(field:ParamArg):String
+	{
+		var info = {
+			n: parseName(field.Name),
+			t: parseType(field.Type),
+			d: parseDefault(field)
+		}
+
+		var optional = field.Type.Name.endsWith("?") || (info.d != null && info.d.d == null);
+		return '${optional ? "?" : ""}${info.n}:${info.t}${optional ? "" : info.d != null ? " = " + info.d.d : ""}';
 	}
 
 	static function parseType(typeObj:ParamTypeObj)
@@ -423,11 +447,100 @@ class Main
 		return type;
 	}
 
-	public static function parseEnums(data:Dynamic)
+	static function parseDefault(field:ParamArg):Null<{d:Null<String>}>
+	{
+		var typeObj:ParamTypeObj = field.Type;
+		var pdefault:String = field.Default;
+
+		if (pdefault == null)
+			return null;
+
+		if (pdefault == "")
+			return {d: '""'};
+		if (pdefault == "nil")
+			return {d: null};
+
+		var optional:Bool = typeObj.Name.endsWith("?");
+
+		var n = typeObj.Name;
+		if (n.endsWith("?"))
+			n = n.substr(0, n.length - 1);
+
+		switch (typeObj.Category)
+		{
+			case Primitive:
+				switch (n)
+				{
+					case 'bool':
+						return {d: '$pdefault'};
+					case 'string':
+						return {d: '"$pdefault"'};
+					case 'int' | 'int64':
+						return {d: '$pdefault'};
+					case 'float' | 'double':
+						return {d: '$pdefault'};
+					case 'null':
+						return null;
+					default:
+				}
+
+			case DataType:
+				switch (n)
+				{
+					case "BinaryString":
+						return {d: '"$pdefault"'};
+					case "QDir":
+						return {d: null};
+					case "QFont":
+						return {d: null};
+					case "CoordinateFrame":
+						return {d: null};
+					case "OpenCloudModel":
+						return {d: null};
+					case "SharedTable":
+						return {d: null};
+					case "Objects":
+						return {d: null};
+					case "RBXScriptSignal":
+						return {d: null};
+					case "Function":
+						return {d: null};
+					case "OptionalCoordinateFrame": // What??
+						return {d: null};
+					case "ProtectedString":
+						return {d: null};
+					default:
+				}
+
+			case Class:
+				return {d: null};
+			case Enum:
+				return {d: null};
+			case Group:
+				switch (n)
+				{
+					case "Variant":
+						return {d: null};
+					case "Dictionary":
+						return {d: null};
+					case "Array":
+						return {d: null};
+					case "Tuple":
+						return {d: null};
+					case "Map":
+						return {d: null};
+					default:
+						return {d: null};
+				}
+			default:
+		}
+		return {d: null};
+	}
+
+	public static function parseEnums(enums:Array<EnumObj>)
 	{
 		outputPath.joinAll(["rblx", "enums"]).toDir().create();
 
-		var enums:Array<EnumObj> = cast Reflect.field(data, "Enums");
 		var lastLen:UInt = 0;
 		for (i in 0...enums.length)
 		{
@@ -543,68 +656,6 @@ class Main
 
 	static dynamic function println(v:Dynamic)
 		Sys.println(v);
-}
-
-typedef ClassObj =
-{
-	var MemoryCategory:String;
-	var Name:String;
-	var Superclass:String;
-	var Tags:Array<String>;
-	var Members:Array<ClassMemberObj>;
-}
-
-typedef ClassMemberObj =
-{
-	var MemberType:MemberType;
-	var Name:String;
-	var Category:String;
-	var ThreadSafety:String;
-	var Tags:Array<String>;
-	var Security:Either<String, {Read:String, Write:String}>;
-	var Serialization:
-		{
-			CanLoad:Bool,
-			CanSave:Bool
-		};
-	var ?ValueType:ParamTypeObj;
-	var ?Parameters:Array<{Name:String, Type:ParamTypeObj}>;
-	var ?ReturnType:ParamTypeObj;
-}
-
-typedef ParamTypeObj =
-{
-	Category:ParamTypeCategory,
-	Name:String
-}
-
-enum abstract MemberType(String) from String to String
-{
-	var Property:String = "Property";
-	var Function:String = "Function";
-	var Event:String = "Event";
-	var Callback:String = "Callback";
-}
-
-enum abstract ParamTypeCategory(String) from String to String
-{
-	var Primitive:String = "Primitive";
-	var Class:String = "Class";
-	var DataType:String = "DataType";
-	var Enum:String = "Enum";
-	var Group:String = "Group";
-}
-
-typedef EnumObj =
-{
-	var Items:Array<EnumItemObj>;
-	var Name:String;
-}
-
-typedef EnumItemObj =
-{
-	var Name:String;
-	var Value:Int;
 }
 /*
 	TAGS:[
