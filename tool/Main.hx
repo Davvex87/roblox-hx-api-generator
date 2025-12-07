@@ -9,7 +9,6 @@ import hx.files.Dir;
 import sys.FileSystem;
 import haxe.Json;
 import sys.Http;
-import Types;
 import preprocessors.*;
 
 using hx.strings.Strings;
@@ -339,7 +338,7 @@ class Main
 		return fieldExistsInSuper(classes, superClass, field);
 	}
 
-	static function parseName(str:String)
+	static function parseName(str:String, noFormat:Bool = false):String
 	{
 		var out = str.toLowerCamel();
 		if (out == "function" || out == "default" || out == "var" || out == "extern" || out == "class" || out == "enum" || out == "switch"
@@ -347,8 +346,8 @@ class Main
 			|| out == "for" || out == "return" || out == "if" || out == "else" || out == "in" || out == "to" || out == "from" || out == "package"
 			|| out == "typedef" || out == "implements" || out == "interface" || out == "operator" || out == "override" || out == "abstract"
 			|| out == "break" || out == "continue" || out == "true" || out == "false" || out == "null" || out == "new" || out == "is")
-			return '${out}_';
-		return out;
+			return '${noFormat ? str : out}_';
+		return noFormat ? str : out;
 	}
 
 	static function parseFieldArg(field:ParamArg):String
@@ -420,7 +419,7 @@ class Main
 			case Class:
 				n;
 			case Enum:
-				n;
+				'EnumItem<$n>';
 			case Group:
 				switch (n)
 				{
@@ -549,16 +548,18 @@ class Main
 			var en = enums[i];
 			var stream = new StringBuf();
 
+			var name = en.Name;
+
 			stream.add('package rblx.enums;\n\n');
 			stream.add('// ADD IMPORTS HERE\n\n');
-			stream.add('@:native("Enum.${en.Name}")\n');
+			stream.add('@:native("Enum.$name")\n');
 			stream.add('@:rblxEnum\n');
-			stream.add('extern class ${en.Name}\n{\n');
+			// stream.add('extern class ${en.Name}\n{\n');
+			stream.add('extern enum abstract $name(EnumItem<$name>)\n{\n');
 
 			for (item in en.Items)
 			{
-				stream.add('\t@:luaDotMethod @:native("${item.Name}")\n');
-				stream.add('\tpublic static extern var ${parseName(item.Name)}:EnumItem;\n\n');
+				stream.add('\tvar ${parseName(item.Name, true)}:EnumItem<$name>;\n');
 			}
 
 			stream.add('}');
