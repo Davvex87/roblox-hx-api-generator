@@ -16,23 +16,23 @@ private extern class NumberSequenceKeypointData
 	/**
 	 * Returns a keypoint with the specified time, value, and envelope (optional).
 	 */
-	public extern function new(time:Float, value:Float, ?envelope:Float);
+	function new(time:Float, value:Float, ?envelope:Float);
 
 	/**
 	 * The amount of variance allowed from the value.
 	 */
 	@:native("Envelope")
-	public extern var envelope:Float;
+	var envelope:Float;
 
 	/**
 	 * The relative time at which the keypoint is positioned.
 	 */
 	@:native("Time")
-	public extern var time:Float;
+	var time:Float;
 
 	/**
 	 * The base value of the keypoint.
 	 */
 	@:native("Value")
-	public extern var value:Float;
+	var value:Float;
 }

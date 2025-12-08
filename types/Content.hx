@@ -17,33 +17,33 @@ private extern class ContentData
 	 * Returns a new Content with an asset URI string value referencing content external to the place.
 	 * @param uri 
 	 */
-	public static extern function fromUri(uri:String):Content;
+	static function fromUri(uri:String):Content;
 
 	/**
 	 * Returns a new Content with a strong reference to an Object.
 	 */
-	public static extern function fromObject(object:Object):Content;
+	static function fromObject(object:Object):Content;
 
 	/**
 	 * An empty Content value with Content.SourceType of None.
 	 */
-	public extern var none:Content;
+	var none:Content;
 
 	/**
 	 * The source type of the contained value.
 	 */
 	@:native("SourceType")
-	public extern var sourceType:ContentSourceType;
+	var sourceType:ContentSourceType;
 
 	/**
 	 * A URI string if Content.SourceType is Uri, otherwise nil.
 	 */
 	@:native("Uri")
-	public extern var uri:Null<String>;
+	var uri:Null<String>;
 
 	/**
 	 * A reference to a non-nil Object if Content.SourceType is Object, otherwise nil.
 	 */
 	@:native("Object")
-	public extern var object:Null<Int>;
+	var object:Null<Int>;
 }

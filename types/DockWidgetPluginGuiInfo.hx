@@ -24,42 +24,42 @@ private extern class DockWidgetPluginGuiInfoData
 	 * @param MinHeight 
 	 * @return
 	 */
-	public extern function new(InitialDockState:InitialDockState, InitialEnabled:Bool, InitialEnabledShouldOverrideRestore:Bool, FloatingXSize:Int,
-		FloatingYSize:Int, MinWidth:Int, MinHeight:Int);
+	function new(InitialDockState:InitialDockState, InitialEnabled:Bool, InitialEnabledShouldOverrideRestore:Bool, FloatingXSize:Int, FloatingYSize:Int,
+		MinWidth:Int, MinHeight:Int);
 
 	/**
 	 * The enabled state of the PluginGui if it does not have a saved state from a previous session.
 	 */
 	@:native("InitialEnabled")
-	public extern var initialEnabled:Bool;
+	var initialEnabled:Bool;
 
 	/**
 	 * If true, will override any saved enabled state with the InitialEnabled value.
 	 */
 	@:native("InitialEnabledShouldOverrideRestore")
-	public extern var initialEnabledShouldOverrideRestore:Bool;
+	var initialEnabledShouldOverrideRestore:Bool;
 
 	/**
 	 * The initial pixel width of the PluginGui when floating.
 	 */
 	@:native("FloatingXSize")
-	public extern var floatingXSize:Int;
+	var floatingXSize:Int;
 
 	/**
 	 * The initial pixel height of the PluginGui when floating.
 	 */
 	@:native("FloatingYSize")
-	public extern var floatingYSize:Int;
+	var floatingYSize:Int;
 
 	/**
 	 * The minimum pixel width of the PluginGui.
 	 */
 	@:native("MinWidth")
-	public extern var minWidth:Int;
+	var minWidth:Int;
 
 	/**
 	 * The minimum pixel height of the PluginGui.
 	 */
 	@:native("MinHeight")
-	public extern var minHeight:Int;
+	var minHeight:Int;
 }

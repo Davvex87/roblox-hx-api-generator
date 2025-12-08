@@ -17,11 +17,11 @@ private extern class RBXScriptConnectionData
 	 * The state of the RBXScriptConnection.
 	 */
 	@:native("Connected")
-	public extern var connected:Bool;
+	var connected:Bool;
 
 	/**
 	 * Disconnects the connection from the event.
 	 */
 	@:native("Disconnect")
-	public extern function disconnect():Void;
+	function disconnect():Void;
 }

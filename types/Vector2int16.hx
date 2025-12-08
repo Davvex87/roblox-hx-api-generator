@@ -41,17 +41,17 @@ private extern class Vecctor2int16Data
 	/**
 	 * Returns a Vector2int16 from the given x and y components.
 	 */
-	public extern function new(x:Int, y:Int);
+	function new(x:Int, y:Int);
 
 	/**
 	 * The x-coordinate of the Vector2int16.
 	 */
 	@:native("X")
-	public extern var x:Int;
+	var x:Int;
 
 	/**
 	 * The y-coordinate of the Vector2int16.
 	 */
 	@:native("Y")
-	public extern var y:Int;
+	var y:Int;
 }

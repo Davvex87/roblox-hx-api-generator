@@ -16,35 +16,35 @@ private extern class RotationCurveKeyData
 	/**
 	 * Returns a new RotationCurveKey at a given time with a given CFrame.
 	 */
-	public extern function new(time:Float, cframe:CFrame, Interpolation:KeyInterpolationMode);
+	function new(time:Float, cframe:CFrame, Interpolation:KeyInterpolationMode);
 
 	/**
 	 * The key interpolation mode for the segment started by this RotationCurveKey.
 	 */
 	@:native("Interpolation")
-	public extern var interpolation:KeyInterpolationMode;
+	var interpolation:KeyInterpolationMode;
 
 	/**
 	 * The time position of this RotationCurveKey.
 	 */
 	@:native("Time")
-	public extern var time:Float;
+	var time:Float;
 
 	/**
 	 * The CFrame value of this RotationCurveKey.
 	 */
 	@:native("Value")
-	public extern var value:CFrame;
+	var value:CFrame;
 
 	/**
 	 * The tangent to the right of this RotationCurveKey.
 	 */
 	@:native("RightTangent")
-	public extern var rightTangent:Float;
+	var rightTangent:Float;
 
 	/**
 	 * The tangent to the left of this RotationCurveKey.
 	 */
 	@:native("LeftTangent")
-	public extern var leftTangent:Float;
+	var leftTangent:Float;
 }

@@ -261,12 +261,12 @@ class Main
 				{
 					case Property:
 						stream.add('\t@:native("${mem.Name}")\n');
-						stream.add('\tpublic extern var ');
+						stream.add('\tvar ');
 						stream.add('${parseName(mem.Name)}${readonly ? '(default, never)' : ''}:${parseType(mem.ValueType)};\n\n');
 
 					case Function:
 						stream.add('\t@:native("${mem.Name}")\n');
-						stream.add('\tpublic extern function ');
+						stream.add('\tfunction ');
 						stream.add('${parseName(mem.Name)}(');
 						var funcParams:Array<String> = [];
 						for (param in mem.Parameters)
@@ -275,7 +275,7 @@ class Main
 
 					case Event:
 						stream.add('\t@:native("${mem.Name}")\n');
-						stream.add('\tpublic extern var ');
+						stream.add('\tvar ');
 						stream.add('${parseName(mem.Name)}:RBXScriptSignal<(');
 						var funcParams:Array<String> = [];
 						for (param in mem.Parameters)
@@ -284,7 +284,7 @@ class Main
 
 					case Callback:
 						stream.add('\t@:native("${mem.Name}")\n');
-						stream.add('\tpublic extern var ');
+						stream.add('\tvar ');
 						stream.add('${parseName(mem.Name)}:(');
 						var funcParams:Array<String> = [];
 						for (param in mem.Parameters)

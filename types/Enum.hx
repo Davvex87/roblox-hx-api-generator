@@ -20,17 +20,17 @@ private extern class EnumData
 	 * Returns an array of all EnumItem options available for this enum.
 	 */
 	@:native("GetEnumItems")
-	public extern function getEnumItems():Array<EnumItem>;
+	function getEnumItems<T>():Array<EnumItem<T>>;
 
 	/**
 	 * Converts an enum name to an Enum.
 	 */
 	@:native("FromName")
-	public extern function fromName(name:String):Null<Enum>;
+	function fromName(name:String):Null<Enum>;
 
 	/**
 	 * Converts an enum value to an Enum.
 	 */
 	@:native("FromValue")
-	public extern function fromValue(value:Int):Null<Enum>;
+	function fromValue(value:Int):Null<Enum>;
 }

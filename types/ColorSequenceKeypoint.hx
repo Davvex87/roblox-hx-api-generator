@@ -16,17 +16,17 @@ private extern class ColorSequenceKeypointData
 	/**
 	 * Returns a ColorSequenceKeypoint from the given time and color.
 	 */
-	public extern function new(time:Float, color:Color3);
+	function new(time:Float, color:Color3);
 
 	/**
 	 * The relative time at which the keypoint is located.
 	 */
 	@:native("Time")
-	public extern var time:Float;
+	var time:Float;
 
 	/**
 	 * The Color3 value of the keypoint.
 	 */
 	@:native("Value")
-	public extern var value:Color3;
+	var value:Color3;
 }

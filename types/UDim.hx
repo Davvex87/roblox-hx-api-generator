@@ -25,17 +25,17 @@ private extern class UDimClass
 	/**
 	 * Returns a UDim from the given components.
 	 */
-	public extern function new(Scale:Float, Offset:Int);
+	function new(Scale:Float, Offset:Int);
 
 	/**
 	 * The relative scale component of the UDim.
 	 */
 	@:native("Scale")
-	public extern var scale:Float;
+	var scale:Float;
 
 	/**
 	 * The absolute offset component of the UDim.
 	 */
 	@:native("Offset")
-	public extern var offset:Int;
+	var offset:Int;
 }

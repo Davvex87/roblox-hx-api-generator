@@ -41,23 +41,23 @@ private extern class Vecctor3int16Data
 	/**
 	 * Returns a new Vector3int16 from the given x, y, and z components.
 	 */
-	public extern function new(x:Int, y:Int, z:Int);
+	function new(x:Int, y:Int, z:Int);
 
 	/**
 	 * The x-coordinate of the Vector3int16.
 	 */
 	@:native("X")
-	public extern var x:Int;
+	var x:Int;
 
 	/**
 	 * The y-coordinate of the Vector3int16.
 	 */
 	@:native("Y")
-	public extern var y:Int;
+	var y:Int;
 
 	/**
 	 * The z-coordinate of the Vector3int16.
 	 */
 	@:native("Z")
-	public extern var z:Int;
+	var z:Int;
 }

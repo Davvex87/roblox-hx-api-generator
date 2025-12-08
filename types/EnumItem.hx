@@ -7,28 +7,28 @@ import rblx.enums.*;
 @:forward
 @:forward.new
 @:forwardStatics
-extern abstract EnumItem(EnumItemData) {}
+extern abstract EnumItem<T>(EnumItemData<T>) {}
 
-private extern class EnumItemData
+private extern class EnumItemData<T>
 {
 	/**
 	 * The name of the EnumItem.
 	 */
 	@:native("Name")
-	public extern var name:String;
+	var name:String;
 
 	/**
 	 * The integral value assigned to the EnumItem.
 	 */
 	@:native("Value")
-	public extern var value:Int;
+	var value:Int;
 
 	/**
 	 * A reference to the parent Enum of the EnumItem.
 	 */
 	@:native("EnumType")
-	public extern var enumType:Enum;
+	var enumType:Enum;
 
 	@:native("IsA")
-	public extern function isA(name:String):Bool;
+	function isA(name:String):Bool;
 }

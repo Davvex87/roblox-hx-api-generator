@@ -21,7 +21,7 @@ private extern class SharedTableData
 	/**
 	 * Returns a new, empty SharedTable.
 	 */
-	public extern function new();
+	function new();
 
 	/**
 	 * Returns a new SharedTable containing elements equivalent to those in the provided Luau table.
@@ -29,13 +29,13 @@ private extern class SharedTableData
 	 * @return SharedTable
 	 */
 	@:native("new")
-	public static extern function fromTable(t:AnyTable):SharedTable;
+	static function fromTable(t:AnyTable):SharedTable;
 
 	/**
 	 * Removes all of the elements from the SharedTable.
 	 * @param st 
 	 */
-	public extern function clear(st:SharedTable):Void;
+	function clear(st:SharedTable):Void;
 
 	/**
 	 * Creates and returns a clone of the provided SharedTable.
@@ -43,7 +43,7 @@ private extern class SharedTableData
 	 * @param deep 
 	 * @return SharedTable
 	 */
-	public extern function clone(st:SharedTable, ?deep:Bool):SharedTable;
+	function clone(st:SharedTable, ?deep:Bool):SharedTable;
 
 	/**
 	 * Creates and returns a frozen (read-only) clone of the provided SharedTable.
@@ -51,7 +51,7 @@ private extern class SharedTableData
 	 * @param deep 
 	 * @return SharedTable
 	 */
-	public extern function cloneAndFreeze(st:SharedTable, ?deep:Bool):SharedTable;
+	function cloneAndFreeze(st:SharedTable, ?deep:Bool):SharedTable;
 
 	/**
 	 * Adds delta to the value with the provided key and returns the original value.
@@ -60,21 +60,21 @@ private extern class SharedTableData
 	 * @param delta 
 	 * @return Int
 	 */
-	public extern function increment(st:SharedTable, key:EitherType<String, Float>, delta:Float):Int;
+	function increment(st:SharedTable, key:EitherType<String, Float>, delta:Float):Int;
 
 	/**
 	 * Returns true if the SharedTable is frozen (read-only).
 	 * @param st 
 	 * @return Bool
 	 */
-	public extern function isFrozen(st:SharedTable):Bool;
+	function isFrozen(st:SharedTable):Bool;
 
 	/**
 	 * Returns the number of elements stored in the SharedTable.
 	 * @param st 
 	 * @return Int
 	 */
-	public extern function size(st:SharedTable):Int;
+	function size(st:SharedTable):Int;
 
 	/**
 	 * Updates the value with the provided key via the provided update function.
@@ -82,5 +82,5 @@ private extern class SharedTableData
 	 * @param key 
 	 * @param f 
 	 */
-	public extern function update(st:SharedTable, key:EitherType<String, Float>, f:(v:EitherType<String, Float>) -> EitherType<String, Float>):Void;
+	function update(st:SharedTable, key:EitherType<String, Float>, f:(v:EitherType<String, Float>) -> EitherType<String, Float>):Void;
 }

@@ -17,29 +17,29 @@ private extern class RaycastResultData
 	 * The distance between the ray origin and the intersection point.
 	 */
 	@:native("Distance")
-	public extern var distance:Float;
+	var distance:Float;
 
 	/**
 	 * The BasePart or Terrain cell that the ray intersected.
 	 */
 	@:native("Instance")
-	public extern var instance:BasePart;
+	var instance:BasePart;
 
 	/**
 	 * The Enum.Material at the intersection point.
 	 */
 	@:native("Material")
-	public extern var material:Material;
+	var material:Material;
 
 	/**
 	 * The world space point at which the intersection occurred.
 	 */
 	@:native("Position")
-	public extern var position:Vector3;
+	var position:Vector3;
 
 	/**
 	 * The normal vector of the intersected face.
 	 */
 	@:native("Normal")
-	public extern var normal:Vector3;
+	var normal:Vector3;
 }

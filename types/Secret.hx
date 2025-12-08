@@ -17,11 +17,11 @@ private extern class SecretData
 	 * Prepends a string to the secret content.
 	 */
 	@:native("AddPrefix")
-	public extern function addPrefix(prefix:String):Secret;
+	function addPrefix(prefix:String):Secret;
 
 	/**
 	 * Appends a string to the secret content.
 	 */
 	@:native("AddSuffix")
-	public extern function addSuffix(suffix:String):Secret;
+	function addSuffix(suffix:String):Secret;
 }

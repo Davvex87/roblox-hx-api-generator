@@ -38,60 +38,60 @@ private extern class Color3Class
 	 * Returns a Color3 from given components within the range of 0 to 255.
 	 */
 	@:native("new")
-	public static extern function fromRGB(red:Int, green:Int, blue:Int):Color3;
+	static function fromRGB(red:Int, green:Int, blue:Int):Color3;
 
 	/**
 	 * Returns a Color3 from the given hue, saturation, and value components.
 	 */
 	@:native("new")
-	public static extern function fromHSV(hue:Float, saturation:Float, value:Float):Color3;
+	static function fromHSV(hue:Float, saturation:Float, value:Float):Color3;
 
 	/**
 	 * Returns a Color3 from a given hex value.
 	 */
 	@:native("new")
-	public static extern function fromHex(hex:String):Color3;
+	static function fromHex(hex:String):Color3;
 
 	/**
 	 * Returns a Color3 with the given red, green, and blue values.
 	 */
-	public extern function new(red:Float, green:Float, blue:Float);
+	function new(red:Float, green:Float, blue:Float);
 
 	/**
 	 * The red value of the color.
 	 */
 	@:native("R")
-	public extern var r:Float;
+	var r:Float;
 
 	/**
 	 * The green value of the color.
 	 */
 	@:native("G")
-	public extern var g:Float;
+	var g:Float;
 
 	/**
 	 * The blue value of the color.
 	 */
 	@:native("B")
-	public extern var b:Float;
+	var b:Float;
 
 	/**
 	 * Returns a Color3 interpolated between two colors.
 	 */
 	@:native("Lerp")
-	public extern function lerp(color:Color3, alpha:Float):Color3;
+	function lerp(color:Color3, alpha:Float):Color3;
 
 	/**
 	 * Returns the hue, saturation, and value of a Color3.
 	 */
 	@:native("ToHSV")
-	public extern function toHSV():Color3ToHSVResult;
+	function toHSV():Color3ToHSVResult;
 
 	/**
 	 * Returns the hex code of a Color3.
 	 */
 	@:native("ToHex")
-	public extern function toHex():String;
+	function toHex():String;
 }
 
 @:multiReturn
