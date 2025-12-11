@@ -4,5 +4,11 @@ import Types;
 
 interface IPreprocessor
 {
-	public function build(classes:Array<ClassObj>, enums:Array<EnumObj>):Void;
+	public function build(data:ParsedTypes):Void;
+}
+
+typedef ParsedTypes =
+{
+	var classes:Array<ClassObj>;
+	var enums:Array<EnumObj>;
 }

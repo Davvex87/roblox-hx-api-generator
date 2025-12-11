@@ -1,5 +1,6 @@
 -cp tool
 -lib haxe-files
 -lib haxe-strings
+-D message.reporting=pretty
 -m Main
 --neko run.n

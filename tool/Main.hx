@@ -10,6 +10,7 @@ import sys.FileSystem;
 import haxe.Json;
 import sys.Http;
 import preprocessors.*;
+import preprocessors.IPreprocessor;
 
 using hx.strings.Strings;
 
@@ -22,7 +23,7 @@ class Main
 	static var noPrint:Bool = false;
 	static var outputPath:Path = null;
 
-	static var preprocessors:Array<IPreprocessor> = [new MissingOptionals()];
+	static var preprocessors:Array<IPreprocessor> = [new MissingOptionals(), new BlacklistedTypes()];
 
 	static function main()
 	{
@@ -123,19 +124,24 @@ class Main
 			Name: "ContentSourceType"
 		});
 
-		var classes = data.Classes;
-		var enums = data.Enums;
+		var parsedTypes:ParsedTypes = {
+			classes: data.Classes,
+			enums: data.Enums
+		};
 
 		for (preprocessor in preprocessors)
 		{
 			println('\nRunning preprocessor: ${Type.getClassName(Type.getClass(preprocessor))}...');
-			preprocessor.build(classes, enums);
+			preprocessor.build(parsedTypes);
 		}
 
-		parseEnums(enums);
+		parseEnums(parsedTypes.enums);
 		println("");
-		parseClasses(classes);
+		parseClasses(parsedTypes.classes);
 		println("");
+		println("Generating services wrapper...");
+		var serviceWrapperStr = getServiceWrapperStr(parsedTypes.classes);
+		File.of(outputPath.joinAll(["rblx", "Services.hx"])).writeString(serviceWrapperStr);
 		if (copyTypes)
 			copyTypesToOutput(outputPath);
 		println("Done!");
@@ -170,9 +176,6 @@ class Main
 		for (i in 0...classes.length)
 		{
 			var cls = classes[i];
-			if (cls.Name == "Studio")
-				continue;
-
 			print('\rParsing classes... (${i + 1}/${classes.length}) ${formatBytes(lastLen)}    ');
 
 			var pkg:String = "rblx";
@@ -583,6 +586,25 @@ class Main
 		}
 
 		print('\rParsing enums... (${enums.length}/${enums.length}) ${formatBytes(lastLen)}    ');
+	}
+
+	public static function getServiceWrapperStr(classes:Array<ClassObj>):String
+	{
+		var stream = new StringBuf();
+
+		stream.add('package rblx;\n\n');
+		stream.add('import rblx.services.*;\n\n');
+		stream.add('extern class Services\n{\n');
+
+		for (service in classes.filter(c -> Reflect.hasField(c, "Tags") && c.Tags.contains("Service")))
+		{
+			stream.add('\t@:nativeVariableCode(\"game:GetService(\\\"${service.Name}\\\"){accessor}{var}\")\n');
+			stream.add('\tpublic static var ${parseName(service.Name)}:${service.Name};\n');
+		}
+
+		stream.add('}');
+
+		return stream.toString();
 	}
 
 	public static function fetchDump(?version:String):String

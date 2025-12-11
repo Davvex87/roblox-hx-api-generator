@@ -1,14 +1,15 @@
 package preprocessors;
 
 import Types;
+import preprocessors.IPreprocessor;
 
 class MissingOptionals implements IPreprocessor
 {
 	public function new() {}
 
-	public function build(classes:Array<ClassObj>, enums:Array<EnumObj>)
+	public function build(data:ParsedTypes)
 	{
-		for (cls in classes)
+		for (cls in data.classes)
 		{
 			if (cls.Name == "Instance")
 			{
