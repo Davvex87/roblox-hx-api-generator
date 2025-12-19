@@ -11,11 +11,11 @@ import rblx.services.*;
 extern abstract Content(ContentData)
 {
 	@:from
-	public static function fromString(s:String):Content
+	public static inline function fromString(s:String):Content
 		return Content.fromUri(s);
 
 	@:from
-	public static function fromInt(i:Int):Content
+	public static inline function fromInt(i:Int):Content
 		return Content.fromUri('rbxasset://$i');
 }
 
