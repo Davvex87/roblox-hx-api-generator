@@ -8,7 +8,16 @@ import rblx.services.*;
 @:forward.new
 @:forwardStatics
 @:native("Content")
-extern abstract Content(ContentData) {}
+extern abstract Content(ContentData)
+{
+	@:from
+	public static function fromString(s:String):Content
+		return Content.fromUri(s);
+
+	@:from
+	public static function fromInt(i:Int):Content
+		return Content.fromUri('rbxasset://$i');
+}
 
 @:native("Content")
 private extern class ContentData
@@ -46,4 +55,10 @@ private extern class ContentData
 	 */
 	@:native("Object")
 	var object:Null<Int>;
+
+	/**
+	 * A reference to a non-nil Opaque content if Content.SourceType is Opaque, otherwise nil.
+	 */
+	@:native("Opaque")
+	var opaque:Null<Int>;
 }
