@@ -14,6 +14,7 @@ import preprocessors.*;
 
 using StringTools;
 using hx.strings.Strings;
+using core.ExprTools;
 
 class RobloxExternGenerator extends CommandLine
 {
@@ -245,6 +246,9 @@ class RobloxExternGenerator extends CommandLine
 
 		for (service in classes.filter(c -> c.tags.contains(Service)))
 		{
+			if (service.isExcluded())
+				continue;
+
 			stream.add('\t@:nativeVariableCode(\"game:GetService(\\\"${service.name}\\\"){accessor}{var}\")\n');
 			stream.add('\tpublic static var ${service.name.toLowerCamel()}:${service.name};\n');
 		}
