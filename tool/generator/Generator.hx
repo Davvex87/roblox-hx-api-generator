@@ -12,9 +12,12 @@ class Generator
 {
 	var preprocessors:Array<IPreprocessor>;
 
+	public static var instance(default, null):Generator;
+
 	public function new(preprocessors:Array<IPreprocessor>)
 	{
 		this.preprocessors = preprocessors;
+		instance = this;
 	}
 
 	public function generateClass(data:ClassData):Null<String>
@@ -61,10 +64,10 @@ class Generator
 
 	function generateField(field:FieldKind):Null<String>
 	{
-		if (field.isExcluded())
+		var baseField = extractBaseField(field);
+		if (baseField.isExcluded())
 			return null;
 
-		var baseField = extractBaseField(field);
 		var genString:String;
 
 		final fieldName = parseName(baseField.name);
@@ -100,7 +103,7 @@ class Generator
 		return metas.join('\n') + '\n' + genString;
 	}
 
-	function makeType(valueType:ValueType):String
+	public function makeType(valueType:ValueType):String
 	{
 		var typeOut = switch (valueType)
 		{
@@ -118,7 +121,7 @@ class Generator
 		return typeOut.type;
 	}
 
-	function getType(valueType:ValueType):TypeOut
+	public function getType(valueType:ValueType):TypeOut
 	{
 		return switch (valueType)
 		{
@@ -131,7 +134,7 @@ class Generator
 		}
 	}
 
-	function extractBaseField(field:FieldKind):BaseField
+	public function extractBaseField(field:FieldKind):BaseField
 	{
 		return switch (field)
 		{
@@ -152,7 +155,7 @@ class Generator
 		return metas;
 	}
 
-	function generateMultiReturns(data:ClassData):Array<String>
+	public function generateMultiReturns(data:ClassData):Array<String>
 	{
 		var multiReturns:Array<String> = [];
 
@@ -187,7 +190,7 @@ class Generator
 		return multiReturns;
 	}
 
-	function getReturnNames(field:BaseField, data:ClassData):Array<String>
+	public function getReturnNames(field:BaseField, data:ClassData):Array<String>
 	{
 		switch (data.name)
 		{
@@ -243,7 +246,7 @@ class Generator
 		return output.toString();
 	}
 
-	function parseName(str:String, noFormat:Bool = false):String
+	public function parseName(str:String, noFormat:Bool = false):String
 	{
 		var out = str.toLowerCamel();
 		if (out == "function" || out == "default" || out == "var" || out == "extern" || out == "class" || out == "enum" || out == "switch"
@@ -255,7 +258,7 @@ class Generator
 		return noFormat ? str : out;
 	}
 
-	function parseParameter(param:Parameter):String
+	public function parseParameter(param:Parameter):String
 	{
 		var type = getType(param.type);
 		var gParam = '${type.optional ? "?" : ""}${parseName(param.name)}:${type.type}';
