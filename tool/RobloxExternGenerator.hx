@@ -52,7 +52,7 @@ class RobloxExternGenerator extends CommandLine
 	public var cwd:Bool;
 
 	/**
-		Saves the API-Dump.json file to the output location
+		Saves the API-Dump.json file to output path
 	**/
 	public var save:Bool;
 
@@ -91,24 +91,24 @@ class RobloxExternGenerator extends CommandLine
 			Sys.println("  (3) custom location");
 			Sys.println("  ( ) cancel");
 			Sys.print("\n  > ");
-		}
 
-		switch (Sys.getChar(true))
-		{
-			case '1'.code:
-				lib = true;
-			case '2'.code:
-				cwd = true;
-			case '3'.code:
-				var inp = Sys.stdin();
-				Sys.print("\nPath: ");
-				var path = inp.readLine();
-				output = path.trim();
-			default:
-				Sys.println("\n\nOPERATION CANCELED!");
-				Sys.exit(0);
+			switch (Sys.getChar(true))
+			{
+				case '1'.code:
+					lib = true;
+				case '2'.code:
+					cwd = true;
+				case '3'.code:
+					var inp = Sys.stdin();
+					Sys.print("\nPath: ");
+					var path = inp.readLine();
+					output = path.trim();
+				default:
+					Sys.println("\n\nOPERATION CANCELED!");
+					Sys.exit(0);
+			}
+			Sys.print("\n");
 		}
-		Sys.print("\n");
 
 		var targetOutputPath:String;
 
@@ -136,10 +136,7 @@ class RobloxExternGenerator extends CommandLine
 		startGenerator(targetOutputPath);
 
 		if (!types)
-		{
-			Sys.println("\nCopy types definitions to output? (Y/n): ");
-			types = !['N'.code, 'n'.code, '0'.code, 'f'.code].contains(Sys.getChar(true));
-		}
+			types = promptYesNo("Copy types definitions to output?", false);
 
 		if (types)
 		{
@@ -162,7 +159,7 @@ class RobloxExternGenerator extends CommandLine
 		println("\n\nDone!");
 	}
 
-	public function startGenerator(outPath:String)
+	function startGenerator(outPath:String)
 	{
 		println('Generating externs to "${FileSystem.absolutePath(outPath)}"...');
 		var jsonDump = fetchDump();
@@ -224,10 +221,7 @@ class RobloxExternGenerator extends CommandLine
 		println('\rParsing enums... (${parsedData.enums.length}/${parsedData.enums.length}) ${formatBytes(lastLen)}    ');
 
 		if (!serviceWrapper)
-		{
-			Sys.println("\nGenerate service wrapper class? (Y/n): ");
-			serviceWrapper = !['N'.code, 'n'.code, '0'.code, 'f'.code].contains(Sys.getChar(true));
-		}
+			serviceWrapper = promptYesNo("Generate service wrapper class?", false);
 
 		if (serviceWrapper)
 		{
@@ -306,6 +300,20 @@ class RobloxExternGenerator extends CommandLine
 		var stringValue = Std.string(roundedValue);
 
 		return stringValue + " " + sizes[i];
+	}
+
+	function promptYesNo(q:String, defaultToNo = false):Bool
+	{
+		if (always)
+			return true;
+
+		if (never)
+			return false;
+
+		Sys.print(q + (defaultToNo ? " (y/N): " : " (Y/n): "));
+		var char = Sys.getChar(true);
+		Sys.print("\n");
+		return !defaultToNo ? !['N'.code, 'n'.code, '0'.code, 'f'.code].contains(char) : ['Y'.code, 'y'.code, '1'.code, 't'.code].contains(char);
 	}
 
 	dynamic function print(v:Dynamic)
