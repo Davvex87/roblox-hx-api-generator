@@ -92,7 +92,7 @@ class Generator
 				genString = 'dynamic function $fieldName(never, set):(';
 				var params = d.parameters.filter(p -> !p.isExcluded()).map(parseParameter);
 				genString += params.join(', ');
-				genString += '):${makeType(d.returnType)};';
+				genString += ')->${makeType(d.returnType)};';
 		}
 
 		var metas = generateSharedFieldMetas(baseField);
