@@ -1,6 +1,6 @@
 -cp tool
--lib haxe-files
+-lib mcli
 -lib haxe-strings
 -D message.reporting=pretty
--m Main
+-m RobloxExternGenerator
 --neko run.n

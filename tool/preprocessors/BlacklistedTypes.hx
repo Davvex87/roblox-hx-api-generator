@@ -1,22 +1,18 @@
 package preprocessors;
 
-import Types;
-import preprocessors.IPreprocessor;
+import core.Expr;
+
+using core.ExprTools;
 
 class BlacklistedTypes implements IPreprocessor
 {
 	public function new() {}
 
-	public function build(data:ParsedTypes)
+	public function buildClass(data:ClassData)
 	{
-		var classes = new Array<ClassObj>();
-		for (cls in data.classes)
-		{
-			if (cls.Name == "Studio")
-				continue;
-
-			classes.push(cls);
-		}
-		data.classes = classes;
+		if (data.name == "Studio")
+			data.exclude();
 	}
+
+	public function buildEnum(data:EnumData) {}
 }

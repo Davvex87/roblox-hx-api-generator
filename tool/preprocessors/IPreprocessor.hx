@@ -1,14 +1,9 @@
 package preprocessors;
 
-import Types;
+import core.Expr;
 
 interface IPreprocessor
 {
-	public function build(data:ParsedTypes):Void;
-}
-
-typedef ParsedTypes =
-{
-	var classes:Array<ClassObj>;
-	var enums:Array<EnumObj>;
+	public function buildEnum(data:EnumData):Void;
+	public function buildClass(data:ClassData):Void;
 }

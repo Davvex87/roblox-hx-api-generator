@@ -1,32 +1,31 @@
 package preprocessors;
 
-import Types;
-import preprocessors.IPreprocessor;
+import core.Expr;
+
+using core.ExprTools;
 
 class MissingOptionals implements IPreprocessor
 {
 	public function new() {}
 
-	public function build(data:ParsedTypes)
+	public function buildClass(data:ClassData)
 	{
-		for (cls in data.classes)
+		if (data.name == "Instance")
 		{
-			if (cls.Name == "Instance")
+			for (field in data.fields)
 			{
-				for (mem in cls.Members)
+				switch (field)
 				{
-					if (mem.MemberType == Function && mem.Name == "WaitForChild")
-					{
-						for (param in mem.Parameters)
-						{
-							if (param.Name == "timeOut")
-							{
-								param.Type.Name += "?";
-							}
-						}
-					}
+					case Function(d):
+						if (d.name == "WaitForChild")
+							for (param in d.parameters)
+								if (param.name == "timeOut")
+									param.type = param.type.makeOptional();
+					default:
 				}
 			}
 		}
 	}
+
+	public function buildEnum(data:EnumData) {}
 }
