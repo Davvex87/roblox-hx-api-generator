@@ -16,13 +16,13 @@ private extern class TweenInfoData
 	/**
 	 * Creates a new TweenInfo from the provided parameters.
 	 */
-	function new(time:Float, easingStyle:EasingStyle, easingDirection:EasingDirection, repeatCount:Int, reverses:Bool, delayTime:Float);
+	function new(time:Float, easingStyle:EnumItem<EasingStyle>, easingDirection:EnumItem<EasingDirection>, ?repeatCount:Int, ?reverses:Bool, ?delayTime:Float);
 
 	/**
 	 * The direction in which the tween executes.
 	 */
 	@:native("EasingDirection")
-	var easingDirection:EasingDirection;
+	var easingDirection:EnumItem<EasingDirection>;
 
 	/**
 	 * Duration of the tween, in seconds.
@@ -46,7 +46,7 @@ private extern class TweenInfoData
 	 * The style in which the tween executes.
 	 */
 	@:native("EasingStyle")
-	var easingStyle:EasingStyle;
+	var easingStyle:EnumItem<EasingStyle>;
 
 	/**
 	 * Whether or not the tween interpolates in reverse tween once the initial tween completes.

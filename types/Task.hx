@@ -2,6 +2,7 @@ package rblx;
 
 import haxe.extern.EitherType;
 import haxe.Constraints.Function;
+import rlua.Thread;
 
 @:native("task")
 extern class Task

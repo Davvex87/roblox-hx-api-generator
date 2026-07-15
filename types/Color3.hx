@@ -37,19 +37,19 @@ private extern class Color3Class
 	/**
 	 * Returns a Color3 from given components within the range of 0 to 255.
 	 */
-	@:native("new")
+	@:native("fromRGB")
 	static function fromRGB(red:Int, green:Int, blue:Int):Color3;
 
 	/**
 	 * Returns a Color3 from the given hue, saturation, and value components.
 	 */
-	@:native("new")
+	@:native("fromHSV")
 	static function fromHSV(hue:Float, saturation:Float, value:Float):Color3;
 
 	/**
 	 * Returns a Color3 from a given hex value.
 	 */
-	@:native("new")
+	@:native("fromHex")
 	static function fromHex(hex:String):Color3;
 
 	/**

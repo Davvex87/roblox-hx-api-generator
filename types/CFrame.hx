@@ -101,7 +101,8 @@ private extern class CFrameClass
 	/**
 	 * Equivalent to fromEulerAnglesXYZ().
 	 */
-	static function Angles(rx:Float, ry:Float, rz:Float):CFrame;
+	@:native("Angles")
+	static function angles(rx:Float, ry:Float, rz:Float):CFrame;
 
 	/**
 	 * Equivalent to fromEulerAnglesYXZ().
@@ -126,132 +127,158 @@ private extern class CFrameClass
 	/**
 	 * The 3D position of the CFrame.
 	 */
-	var Position:Vector3;
+	@:native("Position")
+	var position:Vector3;
 
 	/**
 	 * A copy of the CFrame with no translation.
 	 */
-	var Rotation:CFrame;
+	@:native("Rotation")
+	var rotation:CFrame;
 
 	/**
 	 * The X coordinate of the position.
 	 */
-	var X:Float;
+	@:native("X")
+	var x:Float;
 
 	/**
 	 * The Y coordinate of the position.
 	 */
-	var Y:Float;
+	@:native("Y")
+	var y:Float;
 
 	/**
 	 * The Z coordinate of the position.
 	 */
-	var Z:Float;
+	@:native("Z")
+	var z:Float;
 
 	/**
 	 * The forward-direction component of the CFrame object's orientation, equivalent to the negated form of ZVector.
 	 */
-	var LookVector:Vector3;
+	@:native("LookVector")
+	var lookVector:Vector3;
 
 	/**
 	 * The right-direction component of the CFrame object's orientation.
 	 */
-	var RightVector:Vector3;
+	@:native("RightVector")
+	var rightVector:Vector3;
 
 	/**
 	 * The up-direction component of the CFrame object's orientation.
 	 */
-	var UpVector:Vector3;
+	@:native("UpVector")
+	var upVector:Vector3;
 
 	/**
 	 * Equivalent to RightVector.
 	 */
-	var XVector:Vector3;
+	@:native("XVector")
+	var xVector:Vector3;
 
 	/**
 	 * Equivalent to UpVector.
 	 */
-	var YVector:Vector3;
+	@:native("YVector")
+	var yVector:Vector3;
 
 	/**
 	 * The Z component of the CFrame object's orientation. Equivalent to the third column of the rotation matrix.
 	 */
-	var ZVector:Vector3;
+	@:native("ZVector")
+	var zVector:Vector3;
 
 	/**
 	 * Returns the inverse of the CFrame.
 	 */
-	function Inverse():CFrame;
+	@:native("Inverse")
+	function inverse():CFrame;
 
 	/**
 	 * Returns a CFrame interpolated between itself and goal by the fraction alpha.
 	 */
-	function Lerp(goal:CFrame, alpha:Float):CFrame;
+	@:native("Lerp")
+	function lerp(goal:CFrame, alpha:Float):CFrame;
 
 	/**
 	 * Returns an orthonormalized copy of the CFrame.
 	 */
-	function Orthonormalize():CFrame;
+	@:native("Orthonormalize")
+	function orthonormalize():CFrame;
 
 	/**
 	 * Receives one or more CFrame objects and returns them transformed from object to world space.
 	 */
-	function ToWorldSpace(...cframes:CFrame):Rest<CFrame>;
+	@:native("ToWorldSpace")
+	function toWorldSpace(...cframes:CFrame):Rest<CFrame>;
 
 	/**
 	 * Receives one or more CFrame objects and returns them transformed from world to object space.
 	 */
-	function ToObjectSpace(...cframes:CFrame):Rest<CFrame>;
+	@:native("ToObjectSpace")
+	function toObjectSpace(...cframes:CFrame):Rest<CFrame>;
 
 	/**
 	 * Receives one or more Vector3 objects and returns them transformed from object to world space.
 	 */
-	function PointToWorldSpace(...vector3s:Vector3):Rest<Vector3>;
+	@:native("PointToWorldSpace")
+	function pointToWorldSpace(...vector3s:Vector3):Rest<Vector3>;
 
 	/**
 	 * Receives one or more Vector3 objects and returns them transformed from world to object space.
 	 */
-	function PointToObjectSpace(...vector3s:Vector3):Rest<Vector3>;
+	@:native("PointToObjectSpace")
+	function pointToObjectSpace(...vector3s:Vector3):Rest<Vector3>;
 
 	/**
 	 * Receives one or more Vector3 objects and returns them rotated from object to world space.
 	 */
-	function VectorToWorldSpace(...vector3s:Vector3):Rest<Vector3>;
+	@:native("VectorToWorldSpace")
+	function vectorToWorldSpace(...vector3s:Vector3):Rest<Vector3>;
 
 	/**
 	 * Receives one or more Vector3 objects and returns them rotated from world to object space.
 	 */
-	function VectorToObjectSpace(...vector3s:Vector3):Rest<Vector3>;
+	@:native("VectorToObjectSpace")
+	function vectorToObjectSpace(...vector3s:Vector3):Rest<Vector3>;
 
 	/**
 	 * Returns the values x, y, z, R00, R01, R02, R10, R11, R12, R20, R21, and R22, where x y z represent the position of the CFrame and R00‑R22 represent its 3×3 rotation matrix.
 	 */
-	function GetComponents():Rest<Float>;
+	@:native("GetComponents")
+	function getComponents():Rest<Float>;
 
 	/**
 	 * Returns approximate angles that could be used to generate the CFrame using the optional Enum.RotationOrder.
 	 */
-	function ToEulerAngles(order:RotationOrder):CFrameEulerResult;
+	@:native("ToEulerAngles")
+	function toEulerAngles(order:RotationOrder):CFrameEulerResult;
 
 	/**
 	 * Returns approximate angles that could be used to generate the CFrame using Enum.RotationOrder.XYZ.
 	 */
-	function ToEulerAnglesXYZ():CFrameEulerResult;
+	@:native("ToEulerAnglesXYZ")
+	function toEulerAnglesXYZ():CFrameEulerResult;
 
 	/**
 	 * Returns approximate angles that could be used to generate the CFrame using Enum.RotationOrder.YXZ.
 	 */
-	function ToEulerAnglesYXZ():CFrameEulerResult;
+	@:native("ToEulerAnglesYXZ")
+	function toEulerAnglesYXZ():CFrameEulerResult;
 
 	/**
 	 * Equivalent to CFrame:ToEulerAnglesYXZ().
 	 */
-	function ToOrientation():CFrameEulerResult;
+	@:native("ToOrientation")
+	function toOrientation():CFrameEulerResult;
 
 	/**
 	 * Returns a tuple of a Vector3 and a number which represent the rotation of the CFrame in the axis-angle representation.
 	 */
-	function ToAxisAngle():CFrameToAxisAngleResult;
+	@:native("ToAxisAngle")
+	function toAxisAngle():CFrameToAxisAngleResult;
 
 	/**
 	 * Equivalent to CFrame:GetComponents().
@@ -261,12 +288,14 @@ private extern class CFrameClass
 	/**
 	 * Returns true if the other CFrame is sufficiently close to this CFrame in both position and rotation.
 	 */
-	function FuzzyEq(other:CFrame, epsilon:Float):Bool;
+	@:native("FuzzyEq")
+	function fuzzyEq(other:CFrame, epsilon:Float):Bool;
 
 	/**
 	 * Returns the angle, in radians, between the orientation of one CFrame and another.
 	 */
-	function AngleBetween(other:CFrame):Float;
+	@:native("AngleBetween")
+	function angleBetween(other:CFrame):Float;
 }
 
 @:multiReturn
