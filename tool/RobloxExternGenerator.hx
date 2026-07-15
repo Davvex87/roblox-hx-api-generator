@@ -1,5 +1,6 @@
 package;
 
+import core.Expr.ClassData;
 import generator.Generator;
 import core.ExprParser;
 import sys.io.File;
@@ -12,6 +13,7 @@ import sys.io.Process;
 import preprocessors.*;
 
 using StringTools;
+using hx.strings.Strings;
 
 class RobloxExternGenerator extends CommandLine
 {
@@ -52,6 +54,16 @@ class RobloxExternGenerator extends CommandLine
 		Saves the API-Dump.json file to the output location
 	**/
 	public var save:Bool;
+
+	/**
+		Copy base types to output
+	**/
+	public var types:Bool;
+
+	/**
+		Generate service wrapper class
+	**/
+	public var serviceWrapper:Bool;
 
 	/**
 		Show this message.
@@ -97,10 +109,12 @@ class RobloxExternGenerator extends CommandLine
 		}
 		Sys.print("\n");
 
+		var targetOutputPath:String;
+
 		if (lib != null)
-			startGenerator(Path.join([getLibraryDir("roblox-hx"), "src"]));
+			targetOutputPath = Path.join([getLibraryDir("roblox-hx"), "src"]);
 		else if (cwd != null)
-			startGenerator(Sys.getCwd());
+			targetOutputPath = Sys.getCwd();
 		else if (output != null)
 		{
 			if (!FileSystem.exists(output) || !FileSystem.isDirectory(output))
@@ -109,7 +123,39 @@ class RobloxExternGenerator extends CommandLine
 				Sys.exit(1);
 			}
 
-			startGenerator(output);
+			targetOutputPath = output;
+		}
+		else
+		{
+			Sys.stderr().writeString('Could not determine output path\n');
+			Sys.exit(1);
+			return;
+		}
+
+		startGenerator(targetOutputPath);
+
+		if (!types)
+		{
+			Sys.println("\nCopy types definitions to output? (Y/n): ");
+			types = !['N'.code, 'n'.code, '0'.code, 'f'.code].contains(Sys.getChar(true));
+		}
+
+		if (types)
+		{
+			var searchPath = Path.join([Path.directory(Sys.programPath()), "types"]);
+			if (!FileSystem.exists(searchPath) || !FileSystem.isDirectory(searchPath))
+			{
+				Sys.stderr().writeString('Types path does not exist or is not a directory: $searchPath\n');
+				Sys.exit(1);
+			}
+
+			for (path in FileSystem.readDirectory(searchPath))
+			{
+				if (FileSystem.isDirectory(Path.join([searchPath, path])))
+					continue;
+
+				File.copy(Path.join([searchPath, path]), Path.join([targetOutputPath, "rblx", path]));
+			}
 		}
 
 		println("\n\nDone!");
@@ -117,6 +163,7 @@ class RobloxExternGenerator extends CommandLine
 
 	public function startGenerator(outPath:String)
 	{
+		println('Generating externs to "${FileSystem.absolutePath(outPath)}"...');
 		var jsonDump = fetchDump();
 		if (save)
 			File.saveContent(Path.join([outPath, "API-Dump.json"]), jsonDump);
@@ -138,14 +185,12 @@ class RobloxExternGenerator extends CommandLine
 			if (classOutput == null)
 				continue;
 
-			var filePath = Path.join([
-				outPath,
-				"rblx",
-				classData.tags.contains(Service) ? "services" : "instances",
-				'${classData.name}.hx'
-			]);
+			var targetDir = Path.join([outPath, "rblx", classData.tags.contains(Service) ? "services" : "instances"]);
+			var filePath = Path.join([targetDir, '${classData.name}.hx']);
 
-			FileSystem.createDirectory(Path.directory(filePath));
+			if (!FileSystem.exists(targetDir) || !FileSystem.isDirectory(targetDir))
+				FileSystem.createDirectory(targetDir);
+
 			File.saveContent(filePath, classOutput);
 
 			lastLen += getUtf8Length(classOutput);
@@ -164,18 +209,52 @@ class RobloxExternGenerator extends CommandLine
 			if (enumOutput == null)
 				continue;
 
-			var filePath = Path.join([outPath, "rblx", "enums", '${enumData.name}.hx']);
+			var targetDir = Path.join([outPath, "rblx", "enums"]);
+			var filePath = Path.join([targetDir, '${enumData.name}.hx']);
 
-			FileSystem.createDirectory(Path.directory(filePath));
+			if (!FileSystem.exists(targetDir) || !FileSystem.isDirectory(targetDir))
+				FileSystem.createDirectory(targetDir);
+
 			File.saveContent(filePath, enumOutput);
 
 			lastLen += getUtf8Length(enumOutput);
 		}
 
 		println('\rParsing enums... (${parsedData.enums.length}/${parsedData.enums.length}) ${formatBytes(lastLen)}    ');
+
+		if (!serviceWrapper)
+		{
+			Sys.println("\nGenerate service wrapper class? (Y/n): ");
+			serviceWrapper = !['N'.code, 'n'.code, '0'.code, 'f'.code].contains(Sys.getChar(true));
+		}
+
+		if (serviceWrapper)
+		{
+			var serviceWrapperStr = getServiceWrapperStr(parsedData.classes);
+			File.saveContent(Path.join([outPath, "rblx", "Services.hx"]), serviceWrapperStr);
+		}
 	}
 
-	public function fetchDump():String
+	function getServiceWrapperStr(classes:Array<ClassData>):String
+	{
+		var stream = new StringBuf();
+
+		stream.add('package rblx;\n\n');
+		stream.add('import rblx.services.*;\n\n');
+		stream.add('extern class Services\n{\n');
+
+		for (service in classes.filter(c -> c.tags.contains(Service)))
+		{
+			stream.add('\t@:nativeVariableCode(\"game:GetService(\\\"${service.name}\\\"){accessor}{var}\")\n');
+			stream.add('\tpublic static var ${service.name.toLowerCamel()}:${service.name};\n');
+		}
+
+		stream.add('}');
+
+		return stream.toString();
+	}
+
+	function fetchDump():String
 	{
 		println('Fetching API-Dump.json from ${SOURCE_URL}...');
 		var jsonDump = Http.requestUrl(SOURCE_URL);
@@ -183,7 +262,7 @@ class RobloxExternGenerator extends CommandLine
 		return jsonDump;
 	}
 
-	public function getLibraryDir(lib:String):Null<String>
+	function getLibraryDir(lib:String):Null<String>
 	{
 		try
 		{
@@ -191,7 +270,7 @@ class RobloxExternGenerator extends CommandLine
 			if (process.exitCode() != 0)
 				return null;
 
-			var output = process.stdout.readAll().toString();
+			var output = process.stdout.readAll().toString().replace('\n', '').replace('\r', '').trim();
 			process.close();
 
 			return output;
@@ -200,13 +279,13 @@ class RobloxExternGenerator extends CommandLine
 		return null;
 	}
 
-	public function getUtf8Length(str:String):UInt
+	function getUtf8Length(str:String):UInt
 	{
 		var bytes = haxe.io.Bytes.ofString(str);
 		return bytes.length;
 	}
 
-	public function formatBytes(bytes:Float, decimals:Int = 1):String
+	function formatBytes(bytes:Float, decimals:Int = 1):String
 	{
 		if (bytes == 0)
 			return "0 bytes";
