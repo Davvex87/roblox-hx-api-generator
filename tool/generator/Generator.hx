@@ -92,7 +92,7 @@ class Generator
 				genString += ') -> Void>;';
 
 			case Callback(d):
-				genString = 'dynamic function $fieldName(never, set):(';
+				genString = 'var $fieldName(never, set):(';
 				var params = d.parameters.filter(p -> !p.isExcluded()).map(parseParameter);
 				genString += params.join(', ');
 				genString += ')->${makeType(d.returnType)};';
