@@ -44,6 +44,7 @@ class RobloxTypes
 			case "uniqueid": "Int";
 			case "webviewparams": "Dynamic";
 			case "buffer": "Buffer";
+			case "rbxscriptsignal": "RBXScriptSignal<haxe.Constraints.Function>";
 
 			default: out.type;
 		}
