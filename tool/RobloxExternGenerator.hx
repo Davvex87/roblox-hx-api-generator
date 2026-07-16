@@ -22,7 +22,13 @@ class RobloxExternGenerator extends CommandLine
 	static final SOURCE_URL = "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/API-Dump.json";
 
 	static final ADDONS = [new SecurityCapabilitiesAddon()];
-	static final PREPROCESSORS = [new BlacklistedTypes(), new MissingOptionals(), new NameCollisionFix()];
+	static final PREPROCESSORS = [
+		new APIFieldNameFix(),
+		new BlacklistedTypes(),
+		new MissingOptionals(),
+		new NameCollisionFix(),
+		new OmitRedefinitionFromSuper()
+	];
 
 	/**
 		Disable info printing
