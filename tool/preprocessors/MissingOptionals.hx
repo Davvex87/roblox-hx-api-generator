@@ -18,9 +18,22 @@ class MissingOptionals implements IPreprocessor
 				{
 					case Function(d):
 						if (d.name == "WaitForChild")
+						{
 							for (param in d.parameters)
 								if (param.name == "timeOut")
 									param.type = param.type.makeOptional();
+						}
+						else if (d.name == "FindFirstChild"
+							|| d.name == "FindFirstChildOfClass"
+							|| d.name == "FindFirstAncestor"
+							|| d.name == "FindFirstAncestorOfClass"
+							|| d.name == "FindFirstChildWhichIsA"
+							|| d.name == "FindFirstAncestorWhichIsA")
+						{
+							for (param in d.parameters)
+								if (param.name == "recursive")
+									param.type = param.type.makeOptional();
+						}
 					default:
 				}
 			}
