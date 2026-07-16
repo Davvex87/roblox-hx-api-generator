@@ -3,7 +3,7 @@ package rblx;
 import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
-import lua.Table;
+import rlua.Table;
 import haxe.extern.EitherType;
 
 @:forward
