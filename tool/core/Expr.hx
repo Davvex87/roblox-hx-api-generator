@@ -11,7 +11,7 @@ enum FieldKind
 typedef ClassData =
 {
 	var name:String;
-	var superClass:Null<String>;
+	var superClass:Null<ClassData>;
 	var tags:Array<Tag>;
 	var memoryCategory:MemoryCategory;
 	var fields:Array<FieldKind>;

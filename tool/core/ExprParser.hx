@@ -1,5 +1,6 @@
 package core;
 
+import hx.strings.collection.StringMap;
 import haxe.extern.EitherType;
 import core.JsonInput;
 import haxe.EnumTools;
@@ -22,8 +23,29 @@ class ExprParser
 			enums: []
 		}
 
+		var classMap:StringMap<ClassData> = new StringMap<ClassData>();
+
 		for (classData in data.Classes)
-			result.classes.push(parseClassData(classData));
+		{
+			var parsedData = parseClassData(classData);
+			classMap.set(parsedData.name, parsedData);
+			result.classes.push(parsedData);
+		}
+
+		for (classData in data.Classes)
+		{
+			var superClassName = parseSuperClass(classData.Superclass);
+			if (superClassName != null)
+			{
+				var superClass = classMap.get(superClassName);
+				if (superClass != null)
+				{
+					var parsedClass = classMap.get(classData.Name);
+					if (parsedClass != null)
+						parsedClass.superClass = superClass;
+				}
+			}
+		}
 
 		for (enumData in data.Enums)
 			result.enums.push(parseEnumData(enumData));
@@ -37,7 +59,7 @@ class ExprParser
 
 		return {
 			name: classData.Name,
-			superClass: parseSuperClass(classData.Superclass),
+			superClass: null,
 			tags: classData.Tags != null ? classData.Tags.map(parseTag) : [],
 			memoryCategory: parseMemoryCategory(classData.MemoryCategory),
 			fields: fields

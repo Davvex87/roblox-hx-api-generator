@@ -37,7 +37,7 @@ class Generator
 			{
 				var h = 'extern class ${data.name}';
 				if (data.superClass != null)
-					h += ' extends ${data.superClass}';
+					h += ' extends ${data.superClass.name}';
 				h;
 			};
 
