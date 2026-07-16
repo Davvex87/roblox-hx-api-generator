@@ -1,5 +1,6 @@
 package;
 
+import addons.SecurityCapabilitiesAddon;
 import core.Expr.ClassData;
 import generator.Generator;
 import core.ExprParser;
@@ -19,6 +20,8 @@ using core.ExprTools;
 class RobloxExternGenerator extends CommandLine
 {
 	static final SOURCE_URL = "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/API-Dump.json";
+
+	static final ADDONS = [new SecurityCapabilitiesAddon()];
 	static final PREPROCESSORS = [new BlacklistedTypes(), new MissingOptionals(), new NameCollisionFix()];
 
 	/**
@@ -169,6 +172,13 @@ class RobloxExternGenerator extends CommandLine
 		println('Parsing expressions...');
 
 		var parsedData = ExprParser.parseString(jsonDump);
+
+		for (addon in ADDONS)
+		{
+			parsedData.enums = parsedData.enums.concat(addon.buildEnums());
+			parsedData.classes = parsedData.classes.concat(addon.buildClasses());
+		}
+
 		var generator = new Generator(PREPROCESSORS);
 
 		var lastLen:UInt = 0;
