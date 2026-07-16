@@ -41,7 +41,14 @@ class Generator
 				h;
 			};
 
-		var gMembers:Array<String> = data.fields.map(generateField).filter(f -> f != null);
+		var gMembers:Array<String> = [];
+
+		if (!isService && !data.tags.contains(NotCreatable))
+		{
+			gMembers.push('@:nativeFunctionCode(\'Instance.new("${data.name}")\')\npublic function new();');
+		}
+
+		gMembers = gMembers.concat(data.fields.map(generateField).filter(f -> f != null));
 		var gMultiReturns:Array<String> = generateMultiReturns(data);
 
 		var output:StringBuf = new StringBuf();
@@ -111,7 +118,10 @@ class Generator
 			case Group(n): RobloxTypes.makeGroupType(n);
 			case DataType(n): RobloxTypes.makeDataType(n);
 			case Class(n): RobloxTypes.extract(n);
-			case Enum(n): RobloxTypes.extract(n);
+			case Enum(n):
+				var t = RobloxTypes.extract(n);
+				t.type = 'EnumItem<${t.type}>';
+				t;
 			case MultiReturn(_): {type: '::fieldName::Result', optional: false};
 		}
 
@@ -129,7 +139,10 @@ class Generator
 			case Group(n): RobloxTypes.makeGroupType(n);
 			case DataType(n): RobloxTypes.makeDataType(n);
 			case Class(n): RobloxTypes.extract(n);
-			case Enum(n): RobloxTypes.extract(n);
+			case Enum(n):
+				var t = RobloxTypes.extract(n);
+				t.type = 'EnumItem<${t.type}>';
+				t;
 			case MultiReturn(_): {type: '::fieldName::Result', optional: false};
 		}
 	}
