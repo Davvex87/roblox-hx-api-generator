@@ -12,11 +12,11 @@ extern abstract UDim(UDimClass)
 {
 	@:op(a + b)
 	public inline function add(b:UDim):UDim
-		return untyped __lua__("{0} * {1}", this, b);
+		return untyped __lua__("{0} + {1}", this, b);
 
 	@:op(a - b)
 	public inline function sub(b:UDim):UDim
-		return untyped __lua__("{0} * {1}", this, b);
+		return untyped __lua__("{0} - {1}", this, b);
 }
 
 @:native("UDim")
