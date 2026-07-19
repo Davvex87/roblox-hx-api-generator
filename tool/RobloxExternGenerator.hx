@@ -252,6 +252,7 @@ class RobloxExternGenerator extends CommandLine
 
 		stream.add('package rblx;\n\n');
 		stream.add('import rblx.services.*;\n\n');
+		stream.add('@:native("")\n');
 		stream.add('extern class Services\n{\n');
 
 		for (service in classes.filter(c -> c.tags.contains(Service)))
@@ -259,7 +260,8 @@ class RobloxExternGenerator extends CommandLine
 			if (service.isExcluded())
 				continue;
 
-			stream.add('\t@:nativeVariableCode(\"game:GetService(\\\"${service.name}\\\"){accessor}{var}\")\n');
+			// stream.add('\t@:nativeVariableCode(\"game:GetService(\\\"${service.name}\\\"){accessor}{var}\")\n');
+			stream.add('\t@:native(\"game:GetService(\\\"${service.name}\\\")\")\n');
 			stream.add('\tpublic static var ${service.name.toLowerCamel()}:${service.name};\n');
 		}
 
