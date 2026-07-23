@@ -4,7 +4,7 @@ using StringTools;
 
 class RobloxTypes
 {
-	public static function extract(name:String):TypeOut
+	public static function extract(name:String, isArgument:Bool = false):TypeOut
 	{
 		var isOptional = false;
 		var baseType = name;
@@ -21,9 +21,9 @@ class RobloxTypes
 		};
 	}
 
-	public static function makeDataType(name:String):TypeOut
+	public static function makeDataType(name:String, isArgument:Bool = false):TypeOut
 	{
-		var out = extract(name);
+		var out = extract(name, isArgument);
 
 		if (out.type.toLowerCase() == "optionalcoordinateframe")
 			out.optional = true;
@@ -52,16 +52,16 @@ class RobloxTypes
 		return out;
 	}
 
-	public static function makeGroupType(name:String):TypeOut
+	public static function makeGroupType(name:String, isArgument:Bool = false):TypeOut
 	{
-		var out = extract(name);
+		var out = extract(name, isArgument);
 
 		out.type = switch (out.type.toLowerCase())
 		{
 			case "array": "Array<Dynamic>";
 			case "dictionary": "Map<String, Dynamic>";
 			case "map": "Map<Dynamic, Dynamic>";
-			case "tuple": "Dynamic"; // TODO: multi return
+			case "tuple": isArgument ? "Rest<Dynamic>" : "Dynamic"; // TODO: multi return
 			case "variant": "Dynamic";
 
 			default:
@@ -71,9 +71,9 @@ class RobloxTypes
 		return out;
 	}
 
-	public static function makePrimitiveType(name:String):TypeOut
+	public static function makePrimitiveType(name:String, isArgument:Bool = false):TypeOut
 	{
-		var out = extract(name);
+		var out = extract(name, isArgument);
 
 		out.type = switch (out.type.toLowerCase())
 		{

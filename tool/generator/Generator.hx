@@ -31,7 +31,7 @@ class Generator
 		final isService = data.tags.contains(Service);
 
 		var gPackage:String = 'rblx.${isService ? "services" : "instances"}';
-		var gImports:Array<String> = ["rblx.*", "rblx.instances.*", "rblx.services.*", "rblx.enums.*"];
+		var gImports:Array<String> = ["rblx.*", "rblx.instances.*", "rblx.services.*", "rblx.enums.*", "haxe.Rest"];
 		var gClassMetas:Array<String> = [isService ? '@:rblxService' : '@:rblxObject'];
 		var gClassHeader:String =
 			{
@@ -131,16 +131,16 @@ class Generator
 		return typeOut.type;
 	}
 
-	public function getType(valueType:ValueType):TypeOut
+	public function getType(valueType:ValueType, isArgument:Bool = false):TypeOut
 	{
 		return switch (valueType)
 		{
-			case Primitive(n): RobloxTypes.makePrimitiveType(n);
-			case Group(n): RobloxTypes.makeGroupType(n);
-			case DataType(n): RobloxTypes.makeDataType(n);
-			case Class(n): RobloxTypes.extract(n);
+			case Primitive(n): RobloxTypes.makePrimitiveType(n, isArgument);
+			case Group(n): RobloxTypes.makeGroupType(n, isArgument);
+			case DataType(n): RobloxTypes.makeDataType(n, isArgument);
+			case Class(n): RobloxTypes.extract(n, isArgument);
 			case Enum(n):
-				var t = RobloxTypes.extract(n);
+				var t = RobloxTypes.extract(n, isArgument);
 				t.type = 'EnumItem<${t.type}>';
 				t;
 			case MultiReturn(_): {type: '::fieldName::Result', optional: false};
@@ -273,7 +273,7 @@ class Generator
 
 	public function parseParameter(param:Parameter):String
 	{
-		var type = getType(param.type);
+		var type = getType(param.type, true);
 		var gParam = '${type.optional ? "?" : ""}${parseName(param.name)}:${type.type}';
 		// TODO: Default value
 		return gParam;
