@@ -7,6 +7,7 @@ import core.RobloxTypes;
 using core.ExprTools;
 using StringTools;
 using hx.strings.Strings;
+using Lambda;
 
 class Generator
 {
@@ -33,6 +34,8 @@ class Generator
 		var gPackage:String = 'rblx.${isService ? "services" : "instances"}';
 		var gImports:Array<String> = ["rblx.*", "rblx.instances.*", "rblx.services.*", "rblx.enums.*", "haxe.Rest"];
 		var gClassMetas:Array<String> = [isService ? '@:rblxService' : '@:rblxObject'];
+		if (data.tags.contains(Deprecated))
+			gClassMetas.push(deprecatedMeta(data.deprecationMessage));
 		var gClassHeader:String =
 			{
 				var h = 'extern class ${data.name}';
@@ -40,6 +43,8 @@ class Generator
 					h += ' extends ${data.superClass.name}';
 				h;
 			};
+
+		var gClassSummary = docComment(data?.documentation);
 
 		var gMembers:Array<String> = [];
 
@@ -55,6 +60,8 @@ class Generator
 
 		output.add('package ${gPackage};\n\n');
 		output.add(gImports.map(f -> 'import ${f};').join('\n') + '\n\n');
+		if (gClassSummary.length > 0)
+			output.add(gClassSummary + '\n');
 		output.add(gClassMetas.join('\n') + '\n');
 		output.add(gClassHeader + '\n');
 		output.add('{\n');
@@ -75,39 +82,89 @@ class Generator
 		if (baseField.isExcluded())
 			return null;
 
-		var genString:String;
+		var genString:String = "";
 
 		final fieldName = parseName(baseField.name);
 
 		final isReadonly = baseField.tags.contains(ReadOnly);
 
+		var docLines:Array<String> = baseField.documentation != null ? [baseField.documentation] : [];
+		var docTags:Array<String> = [];
+
+		inline function addParamDocs(parameters:Array<Parameter>)
+		{
+			for (p in parameters)
+				if (p.documentation != null)
+					docTags.push('@param ${parseName(p.name)} ${p.documentation}');
+		}
+
 		switch (field)
 		{
 			case Property(d):
-				genString = '${isReadonly ? "final" : "var"} $fieldName:${makeType(d.valueType)};';
+				genString += '${isReadonly ? "final" : "var"} $fieldName:${makeType(d.valueType)};';
 
 			case Function(d):
-				genString = 'function $fieldName(';
-				var params = d.parameters.filter(p -> !p.isExcluded()).map(parseParameter);
-				genString += params.join(', ');
+				var parameters = d.parameters.filter(p -> !p.isExcluded());
+				addParamDocs(parameters);
+				if (d.returnDocumentation != null)
+					docTags.push('@return ${d.returnDocumentation}');
+
+				genString += 'function $fieldName(';
+				genString += parameters.map(parseParameter).join(', ');
 				genString += '):${makeType(d.returnType).replace("::fieldName::", baseField.name)};';
 
 			case Event(d):
-				genString = 'var $fieldName:RBXScriptSignal<(';
-				var params = d.parameters.filter(p -> !p.isExcluded()).map(parseParameter);
-				genString += params.join(', ');
+				var parameters = d.parameters.filter(p -> !p.isExcluded());
+				addParamDocs(parameters);
+
+				genString += 'var $fieldName:RBXScriptSignal<(';
+				genString += parameters.map(parseParameter).join(', ');
 				genString += ') -> Void>;';
 
 			case Callback(d):
-				genString = 'var $fieldName(never, set):(';
-				var params = d.parameters.filter(p -> !p.isExcluded()).map(parseParameter);
-				genString += params.join(', ');
+				var parameters = d.parameters.filter(p -> !p.isExcluded());
+				addParamDocs(parameters);
+				if (d.returnDocumentation != null)
+					docTags.push('@return ${d.returnDocumentation}');
+
+				genString += 'var $fieldName(never, set):(';
+				genString += parameters.map(parseParameter).join(', ');
 				genString += ')->${makeType(d.returnType)};';
 		}
 
+		if (docTags.length > 0)
+		{
+			if (docLines.length > 0)
+				docLines.push("");
+			docLines = docLines.concat(docTags);
+		}
+
+		var fieldSummary = docComment(docLines.length > 0 ? docLines.join("\n") : null);
 		var metas = generateSharedFieldMetas(baseField);
 
-		return metas.join('\n') + '\n' + genString;
+		return (fieldSummary.length > 0 ? fieldSummary + '\n' : '') + metas.join('\n') + '\n' + genString;
+	}
+
+	function docComment(?str:String):String
+	{
+		if (str == null)
+			return "";
+		str = str.trim();
+		if (str.length == 0)
+			return "";
+
+		str = str.replace("*/", "*\\/");
+
+		var lines = str.split("\n").map(l -> l.rtrim());
+		return '/**\n' + lines.map(l -> l.length > 0 ? '\t$l' : '').join('\n') + '\n**/';
+	}
+
+	function deprecatedMeta(?message:String):String
+	{
+		if (message == null)
+			return '@:deprecated';
+		var escaped = message.replace("\\", "\\\\").replace('"', '\\"').replace("\n", " ");
+		return '@:deprecated("${escaped}")';
 	}
 
 	public function makeType(valueType:ValueType):String
@@ -163,7 +220,7 @@ class Generator
 		var metas:Array<String> = ['@:native("${field.name}")'];
 
 		if (field.tags.contains(Deprecated))
-			metas.push('@:deprecated');
+			metas.push(deprecatedMeta(field.deprecationMessage));
 
 		return metas;
 	}
@@ -242,18 +299,30 @@ class Generator
 		var output:StringBuf = new StringBuf();
 		output.add('package rblx.enums;\n\n');
 		output.add('import rblx.*;\n\n');
+		var gEnumSummary = docComment(data.documentation);
+		if (gEnumSummary.length > 0)
+			output.add(gEnumSummary + '\n');
 		output.add('@:native("Enum.${data.name}")\n');
 		output.add('@:rblxEnum\n');
+		if (data.tags.contains(Deprecated))
+			output.add(deprecatedMeta(data.deprecationMessage) + '\n');
 		output.add('extern enum abstract ${data.name}(EnumItem<${data.name}>)\n{\n');
 
 		var enumItems:Array<String> = [];
 
 		for (item in data.items)
 		{
-			enumItems.push('\tvar ${parseName(item.name, true)}:EnumItem<${data.name}>;');
+			var gItem = '';
+			var gItemSummary = docComment(item.documentation);
+			if (gItemSummary.length > 0)
+				gItem += gItemSummary + '\n';
+			if (item.deprecated)
+				gItem += deprecatedMeta(item.deprecationMessage) + '\n';
+			gItem += 'var ${parseName(item.name, true)}:EnumItem<${data.name}>;';
+			enumItems.push('\t' + gItem.replace('\n', '\n\t'));
 		}
 
-		output.add(enumItems.join('\n'));
+		output.add(enumItems.join(data.items.exists(i -> i.documentation != null) ? '\n\n' : '\n'));
 		output.add('\n}');
 
 		return output.toString();

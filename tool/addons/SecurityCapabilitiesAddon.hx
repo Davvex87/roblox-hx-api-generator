@@ -8,12 +8,12 @@ class SecurityCapabilitiesAddon implements IAddon
 {
 	public function new() {}
 
-	public function buildClasses()
+	public function buildClasses():Array<ClassData>
 	{
 		return [];
 	}
 
-	public function buildEnums()
+	public function buildEnums():Array<EnumData>
 	{
 		return [
 			{

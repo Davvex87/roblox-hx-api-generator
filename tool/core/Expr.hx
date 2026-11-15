@@ -15,6 +15,8 @@ typedef ClassData =
 	var tags:Array<Tag>;
 	var memoryCategory:MemoryCategory;
 	var fields:Array<FieldKind>;
+	var ?documentation:String;
+	var ?deprecationMessage:String;
 }
 
 typedef BaseField =
@@ -24,6 +26,8 @@ typedef BaseField =
 	var security:Null<MemberSecurity>;
 	var tags:Array<Tag>;
 	var threadSafety:ThreadSafety;
+	var ?documentation:String;
+	var ?deprecationMessage:String;
 }
 
 typedef PropertyData = BaseField &
@@ -35,6 +39,7 @@ typedef PropertyData = BaseField &
 typedef FunctionData = BaseField &
 {
 	var returnType:ValueType;
+	var ?returnDocumentation:String;
 	var parameters:Array<Parameter>;
 }
 
@@ -46,6 +51,7 @@ typedef EventData = BaseField &
 typedef CallbackData = BaseField &
 {
 	var returnType:ValueType;
+	var ?returnDocumentation:String;
 	var parameters:Array<Parameter>;
 }
 
@@ -54,6 +60,7 @@ typedef Parameter =
 	var name:String;
 	var type:ValueType;
 	var ?defaultValue:String;
+	var ?documentation:String;
 }
 
 typedef Capabilities =
@@ -85,12 +92,17 @@ typedef EnumData =
 	var name:String;
 	var items:Array<EnumItem>;
 	var tags:Array<Tag>;
+	var ?documentation:String;
+	var ?deprecationMessage:String;
 }
 
 typedef EnumItem =
 {
 	var name:String;
 	var value:Int;
+	var ?deprecated:Bool;
+	var ?documentation:String;
+	var ?deprecationMessage:String;
 }
 
 enum MemoryCategory

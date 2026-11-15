@@ -1,5 +1,6 @@
 package;
 
+import core.DocsParser;
 import addons.SecurityCapabilitiesAddon;
 import core.Expr.ClassData;
 import generator.Generator;
@@ -19,7 +20,9 @@ using core.ExprTools;
 
 class RobloxExternGenerator extends CommandLine
 {
-	static final SOURCE_URL = "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/API-Dump.json";
+	public static final SOURCE_URL = "https://raw.githubusercontent.com/MaximumADHD/Roblox-Client-Tracker/refs/heads/roblox/API-Dump.json";
+
+	public static final DOCS_REMOTE = "https://github.com/Roblox/creator-docs.git";
 
 	static final ADDONS = [new SecurityCapabilitiesAddon()];
 	static final PREPROCESSORS = [
@@ -171,9 +174,13 @@ class RobloxExternGenerator extends CommandLine
 	function startGenerator(outPath:String)
 	{
 		println('Generating externs to "${FileSystem.absolutePath(outPath)}"...');
+		println('Fetching roblox engine API json dump...');
 		var jsonDump = fetchDump();
 		if (save)
 			File.saveContent(Path.join([outPath, "API-Dump.json"]), jsonDump);
+
+		println('Fetching roblox engine reference documentation and parsing...');
+		DocsParser.preload(print, println);
 
 		println('Parsing expressions...');
 

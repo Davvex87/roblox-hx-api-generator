@@ -5,6 +5,7 @@ import haxe.extern.EitherType;
 import core.JsonInput;
 import haxe.EnumTools;
 import core.Expr;
+import core.DocsParser.ParsedMemberDocData;
 
 using macros.StructureCombiner;
 
@@ -55,20 +56,26 @@ class ExprParser
 
 	static function parseClassData(classData:RblxClassData):ClassData
 	{
+		DocsParser.setClassFocus(classData.Name);
 		var fields:Array<FieldKind> = classData.Members.map(parseClassField);
+		var classDocs = DocsParser.getClassFocusData();
 
 		return {
 			name: classData.Name,
 			superClass: null,
 			tags: classData.Tags != null ? classData.Tags.map(parseTag) : [],
 			memoryCategory: parseMemoryCategory(classData.MemoryCategory),
-			fields: fields
+			fields: fields,
+			documentation: classDocs?.summary,
+			deprecationMessage: classDocs?.deprecationMessage
 		};
 	}
 
 	static function parseClassField(member:RblxMember):FieldKind
 	{
 		var baseField = getFieldBase(member);
+		var docs = DocsParser.getMemberDocs(member.MemberType, member.Name);
+		var parseParam = (p:RblxParameter) -> parseParameter(p, docs);
 
 		switch (member.MemberType)
 		{
@@ -80,30 +87,42 @@ class ExprParser
 			case "Function":
 				return Function(baseField.combine({
 					returnType: parseValueType(member.ReturnType),
-					parameters: member.Parameters?.map(parseParameter) ?? []
+					parameters: member.Parameters?.map(parseParam) ?? [],
+					returnDocumentation: joinReturnDocs(docs)
 				}));
 			case "Event":
 				return Event(baseField.combine({
-					parameters: member.Parameters?.map(parseParameter) ?? []
+					parameters: member.Parameters?.map(parseParam) ?? []
 				}));
 			case "Callback":
 				return Callback(baseField.combine({
 					returnType: parseValueType(member.ReturnType),
-					parameters: member.Parameters?.map(parseParameter) ?? []
+					parameters: member.Parameters?.map(parseParam) ?? [],
+					returnDocumentation: joinReturnDocs(docs)
 				}));
 		}
 
 		throw 'Unknown class member of type ${member.MemberType}';
 	}
 
+	static function joinReturnDocs(docs:Null<ParsedMemberDocData>):Null<String>
+	{
+		if (docs == null || docs.returns.length == 0)
+			return null;
+		return docs.returns.join("\n");
+	}
+
 	static function getFieldBase(member:RblxMember):BaseField
 	{
+		var docs = DocsParser.getMemberDocs(member.MemberType, member.Name);
 		return {
 			capabilities: parseCapabilities(member.Capabilities),
 			name: member.Name,
 			security: parseMemberSecurity(member.Security),
 			tags: member.Tags != null ? member.Tags.map(parseTag) : [],
-			threadSafety: parseThreadSafety(member.ThreadSafety)
+			threadSafety: parseThreadSafety(member.ThreadSafety),
+			documentation: docs?.summary,
+			deprecationMessage: docs?.deprecationMessage
 		};
 	}
 
@@ -200,12 +219,13 @@ class ExprParser
 		return categoryName;
 	}
 
-	static function parseParameter(param:RblxParameter):Parameter
+	static function parseParameter(param:RblxParameter, ?docs:ParsedMemberDocData):Parameter
 	{
 		return {
 			name: param.Name,
 			type: parseValueType(param.Type),
-			defaultValue: param.Default
+			defaultValue: param.Default,
+			documentation: docs?.parameters.get(param.Name)
 		};
 	}
 
@@ -245,20 +265,26 @@ class ExprParser
 
 	static function parseEnumData(enumData:RblxEnumData):EnumData
 	{
-		var items:Array<EnumItem> = enumData.Items.map(parseEnumItem);
+		var enumDocs = DocsParser.getEnumDocs(enumData.Name);
+		var items:Array<EnumItem> = enumData.Items.map(item -> parseEnumItem(item, enumDocs?.items.get(item.Name)));
 
 		return {
 			name: enumData.Name,
 			tags: enumData.Tags?.map(parseTag) ?? [],
-			items: items
+			items: items,
+			documentation: enumDocs?.summary,
+			deprecationMessage: enumDocs?.deprecationMessage
 		};
 	}
 
-	static function parseEnumItem(enumItem:RblxEnumItem):EnumItem
+	static function parseEnumItem(enumItem:RblxEnumItem, ?docs:ParsedMemberDocData):EnumItem
 	{
 		return {
 			name: enumItem.Name,
-			value: enumItem.Value
+			value: enumItem.Value,
+			deprecated: enumItem.Tags?.contains("Deprecated") ?? false,
+			documentation: docs?.summary,
+			deprecationMessage: docs?.deprecationMessage
 		};
 	}
 }

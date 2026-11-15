@@ -1,6 +1,8 @@
 -cp tool
 -lib mcli
 -lib haxe-strings
+-lib yaml
 -D message.reporting=pretty
+-D no-deprecation-warnings
 -m RobloxExternGenerator
 --neko run.n
