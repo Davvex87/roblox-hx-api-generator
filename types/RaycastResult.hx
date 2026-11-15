@@ -4,6 +4,11 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The RaycastResult data type stores the result of a successful raycasting operation performed by WorldRoot:Raycast(). It contains the properties listed below.
+
+	This object should not be confused with the similarly-named RaycastParams which is used to perform a raycast.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

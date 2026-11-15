@@ -5,6 +5,11 @@ import rblx.services.*;
 import rblx.enums.*;
 import haxe.extern.EitherType;
 
+/**
+	The OverlapParams data type stores parameters for use with WorldRoot boundary-querying functions, in particular WorldRoot:GetPartBoundsInBox(), WorldRoot:GetPartBoundsInRadius() and WorldRoot:GetPartsInPart(). The ExcludeInstances and IncludeInstances properties store a set of objects and their descendants that will be excluded and included from the query. The OverlapParams.CollisionGroup property can specify a collision group for the boundary query operation.
+
+	Unlike most data types in Luau, you can change all of the members of OverlapParams without creating a new object, allowing you to reuse the same object repeatedly.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

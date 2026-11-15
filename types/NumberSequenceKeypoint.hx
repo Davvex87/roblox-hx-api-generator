@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The NumberSequenceKeypoint data type represents keypoints within a NumberSequence with a particular time, value, and envelope size.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

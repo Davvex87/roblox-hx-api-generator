@@ -4,6 +4,15 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The Region3 data type describes a volume in 3D space similar to an axis-aligned rectangular prism. It is commonly used with Terrain functions and functions that detect parts within a volume, such as WorldRoot:FindPartsInRegion3().
+
+	The prism's center is accessible using the Region3.CFrame property and the prism's size is accessible through the Region3.Size property. Note that the components of this property may be negative.
+
+	The Region3:ExpandToGrid() method returns a new Region3 whose bounds comply with a provided resolution value. The resulting volume may be equal to or greater than the original volume, but never smaller.
+
+	@see https://create.roblox.com/docs/reference/engine/datatypes/Region3int16
+**/
 @:forward
 @:forward.new
 @:forwardStatics

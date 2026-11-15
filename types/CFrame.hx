@@ -6,6 +6,23 @@ import rblx.enums.*;
 import haxe.Rest;
 import rblx.Enum;
 
+/**
+	The CFrame data type, short for coordinate frame, describes a 3D position and orientation. It is made up of a positional component and a rotational component and includes essential arithmetic operations for working with 3D data on Roblox.
+
+	```lua
+	-- Create a CFrame at a certain position and Euler rotation
+	local cf = CFrame.new(0, 5, 0) * CFrame.fromEulerAngles(math.rad(45), 0, 0)
+	```
+
+	#### Positional Component
+	The positional component is available as a Vector3. In addition, the components of a CFrame object's position are also available in the X, Y and Z properties like a Vector3.
+
+	#### Rotational Component
+	CFrame stores 3D rotation data in a 3×3 rotation matrix. These values are returned by the CFrame:GetComponents() function after the x, y and z positional values. This matrix is used internally when doing calculations involving rotations, using radians as their unit (for conversion from one to the other, use math.rad() or math.deg()).
+
+	@see https://create.roblox.com/docs/workspace/cframes
+	@see https://create.roblox.com/docs/reference/engine/enums/RotationOrder
+**/
 @:forward
 @:forward.new
 @:forwardStatics

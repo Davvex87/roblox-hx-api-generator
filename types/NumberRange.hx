@@ -4,6 +4,11 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The NumberRange represents a range of numbers.
+
+	NumberRange stores its NumberRange.Min and NumberRange.Max values as 32-bit floating-point numbers. Very large numbers or numbers requiring high decimal precision may lose accuracy.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

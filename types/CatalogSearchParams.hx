@@ -4,6 +4,27 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The CatalogSearchParams data type stores the parameters of a catalog search via AvatarEditorService:SearchCatalogAsync().
+
+	When accessing the value of the CatalogSearchParams.BundleTypes or CatalogSearchParams.AssetTypes property the returned table will be read-only to avoid confusion when not directly accessing the CatalogSearchParams instance.
+
+	For example, you can use these properties as follows:
+
+	```lua
+	local params = CatalogSearchParams.new()
+	params.SearchKeyword = "Test"
+	params.MinPrice = 5000
+	params.MaxPrice = 10000
+	params.BundleTypes = {Enum.BundleType.Animations, Enum.BundleType.BodyParts}
+
+	local types = params.BundleTypes
+	for _, val in types do
+	  print(val)
+	end
+	-- table.insert(types, Enum.BundleType.Animations) -- This would not work because the table is read only
+	```
+**/
 @:forward
 @:forward.new
 @:forwardStatics

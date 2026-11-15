@@ -5,24 +5,20 @@ import rblx.services.*;
 import rblx.enums.*;
 
 /**
- * The ``Vector3`` data type represents a vector in 3D space, typically used as a point in 3D space or the dimensions of a rectangular prism.
- * ``Vector3`` supports basic component-based arithmetic operations (sum, difference, product, and quotient) and these operations can be applied on the left or right hand side to either another ``Vector3`` or a number.
- * It also features methods for common vector operations, such as ``Cross()`` and ``Dot()``.
- * 
- * Alternatively to ``Vector3``, consider using the methods and properties of the ``vector`` library.
- * 
- * Some example usages of ``Vector3`` are the ``Position``, ``Rotation``, and ``Size`` of parts, for example:
- * 
- * ```haxe
- * var workspace = Game.getService("Workspace");
- * 
- * var part = workspace.findFIrstChild("Part");
- * part.position = part.position + new Vector3(5, 2, 10) // Move part by (5, 2, 10);
- * ```
- * ``Vector3`` is also commonly used when constructing more complex 3D data types such as ``CFrame``. Many of these data types' methods will use a ``Vector3`` within their parameters, such as ``CFrame.pointToObjectSpace()``.
- * 
- * [Open Documentation](https://https://create.roblox.com/docs/reference/engine/datatypes/Vector3)
- */
+	The Vector3 data type represents a vector in 3D space, typically used as a point in 3D space or the dimensions of a rectangular prism. Vector3 supports basic component-based arithmetic operations (sum, difference, product, and quotient) and these operations can be applied on the left or right hand side to either another Vector3 or a number. It also features methods for common vector operations, such as Cross() and Dot().
+
+	Alternatively to Vector3, consider using the methods and properties of the vector library.
+
+	Some example usages of Vector3 are the Position, Rotation, and Size of parts, for example:
+
+	```lua
+	local part = Instance.new("Part")
+	part.Position = part.Position + Vector3.new(5, 2, 10) -- Move part by (5, 2, 10)
+	print(part.Position) --> 5, 2, 10
+	```
+
+	Vector3 is also commonly used when constructing more complex 3D data types such as CFrame. Many of these data types' methods will use a Vector3 within their parameters, such as CFrame:PointToObjectSpace().
+**/
 @:forward
 @:forward.new
 @:forwardStatics

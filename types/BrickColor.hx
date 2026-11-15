@@ -5,6 +5,11 @@ import rblx.services.*;
 import rblx.enums.*;
 import rblx.Color3;
 
+/**
+	The BrickColor data type provides a predefined list of named colors, not to be confused with Color3, a more general data type that describes RGB colors. The following code shows how to use BrickColor.new() to declare the BrickColor property of a Part.
+
+	@see https://create.roblox.com/docs/reference/engine/datatypes/BrickColor
+**/
 @:forward
 @:forward.new
 @:forwardStatics

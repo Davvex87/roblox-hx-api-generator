@@ -5,6 +5,9 @@ import rblx.services.*;
 import rblx.enums.*;
 import lua.Table;
 
+/**
+	The Random data type generates pseudorandom numbers and directions.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

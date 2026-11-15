@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The Enum data type represents an individual enum in Roblox. An individual enum can be indexed through the Enums type, via the name of the enum itself.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

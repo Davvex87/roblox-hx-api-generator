@@ -5,6 +5,13 @@ import rblx.services.*;
 import rblx.enums.*;
 import haxe.extern.EitherType;
 
+/**
+	The RaycastParams data type stores parameters for WorldRoot:Raycast() operations. The ExcludeInstances and IncludeInstances properties store a set of objects and their descendants that will be excluded and included from the query. The RaycastParams.IgnoreWater property can be used to ignore Terrain water, and the RaycastParams.CollisionGroup property can specify a collision group for the raycasting operation.
+
+	This object is different from the similarly named RaycastResult which provides the results of a raycast.
+
+	Unlike most data types in Luau, you can change all of the members of RaycastParams without creating a new object, allowing you to reuse the same object repeatedly.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

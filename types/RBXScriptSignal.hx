@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The RBXScriptSignal data type, more commonly known as an Event, provides a way for user-defined functions, called listeners, to call when something happens in the game. When an event happens, the RBXScriptSignal fires and calls any listeners that are connected to it. An RBXScriptSignal may also pass arguments to each listener to provide extra information about the event.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

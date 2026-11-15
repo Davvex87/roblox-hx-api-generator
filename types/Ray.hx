@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The Ray data type represents a half-line, finite in one direction but infinite in the other. It can be defined by a 3D point, where the line originates from, and a direction vector, which is the direction it goes in.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

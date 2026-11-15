@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The DockWidgetPluginGuiInfo data type describes details for a DockWidgetPluginGui. This data type is used when constructing a PluginGui via the plugin's Plugin:CreateDockWidgetPluginGuiAsync() method.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

@@ -6,6 +6,9 @@ import rblx.enums.*;
 import rlua.Table;
 import haxe.extern.EitherType;
 
+/**
+	Represents a table-like data structure that can be shared across execution contexts. While it can be used for various sorts of general data storage, it is designed especially for use with Parallel Luau, where it can be used to share state across scripts parented under different Actor instances.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

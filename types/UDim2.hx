@@ -4,6 +4,16 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The UDim2 data type represents a two-dimensional value where each dimension is composed of a relative scale and an absolute offset in logical pixels. It is a combination of two UDim data types representing the X and Y dimensions. The most common usages for UDim2 are setting the Size and Position of GuiObjects.
+
+	```lua
+	local guiObject = Instance.new("Frame")
+	guiObject.Size = UDim2.new(0, 300, 1, 0)  -- 300 logical pixels wide; full height of parent
+	guiObject.Position = UDim2.new(0, 50, 0, 0)  -- 50 logical pixels from the left
+	print(guiObject.Size) --> {0, 300}, {1, 0}
+	```
+**/
 @:forward
 @:forward.new
 @:forwardStatics

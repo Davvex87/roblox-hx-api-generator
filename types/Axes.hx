@@ -5,14 +5,15 @@ import rblx.services.*;
 import rblx.enums.*;
 import lua.Table;
 
-@:forward
-@:forward.new
-@:forwardStatics
-@:native("Axes")
-extern abstract Axes(AxesClass) {}
+/**
+	The Axes data type contains a set of enabled 3D axes, represented as a bitmask. It is used by the ArcHandles class through its Axes property to control which rotation arc handles are visible.
 
+	Axes exposes three axis properties (X, Y, Z) and six face properties (Top, Bottom, Left, Right, Front, Back). Because faces map to their corresponding axis, face pairs always share the same value: Top and Bottom both reflect the Y axis, Left and Right both reflect the X axis, and Front and Back both reflect the Z axis.
+
+	Like most data types on Roblox, the Axes data type is immutable: you cannot assign to its properties once created.
+**/
 @:native("Axes")
-private extern class AxesClass
+extern class Axes
 {
 	/**
 	 * Creates a new Axes using list of axes and/or faces. NormalIds (faces) are converted to the corresponding axes.

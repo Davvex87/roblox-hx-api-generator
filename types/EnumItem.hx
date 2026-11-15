@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The EnumItem data type represents an individual item in a Roblox enum.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

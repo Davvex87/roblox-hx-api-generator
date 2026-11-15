@@ -4,6 +4,16 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The UDim data type represents a one-dimensional value with two components: a relative scale and an absolute offset in logical pixels. At evaluation time, the engine computes the final pixel value as Scale * referenceMeasurement + Offset, where the reference measurement is typically the size of a parent GuiObject along the corresponding axis.
+
+	UDim values appear individually in properties such as UICorner.CornerRadius, UIPadding.PaddingTop, and UIStroke.Thickness, or paired as a UDim2 for two-dimensional sizing and positioning.
+
+	```lua
+	-- 50% of the parent plus 10 extra logical pixels
+	local dimension = UDim.new(0.5, 10)
+	```
+**/
 @:forward
 @:forward.new
 @:forwardStatics

@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The Secret data type stores the secret content returned by HttpService:GetSecret(). It cannot be printed or logged, but can be modified using built-in functions:
+**/
 @:forward
 @:forward.new
 @:forwardStatics

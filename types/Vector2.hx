@@ -4,32 +4,55 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The Vector2 data type represents a 2D value with direction and magnitude. Some applications include GUI elements and 2D mouse positions.
+
+	@see https://create.roblox.com/docs/reference/engine/datatypes/Vector2
+**/
 @:forward
 @:forward.new
 @:forwardStatics
 @:native("Vector2")
 extern abstract Vector2(Vector2Data)
 {
+	/**
+		Produces a Vector2 with each component of the second added to the corresponding component of the first.
+	**/
 	@:op(a + b)
 	public inline function add(b:Vector2):Vector2
 		return untyped __lua__("{0} + {1}", this, b);
 
+	/**
+		Produces a Vector2 with each component of the second subtracted from the corresponding component of the first.
+	**/
 	@:op(a - b)
 	public inline function sub(b:Vector2):Vector2
 		return untyped __lua__("{0} - {1}", this, b);
 
+	/**
+		Produces a Vector2 with each component of the second multiplied by the corresponding component of the first.
+	**/
 	@:op(a * b)
 	public inline function mul(b:Vector2):Vector2
 		return untyped __lua__("{0} * {1}", this, b);
 
+	/**
+		Produces a Vector2 with each component of the first divided by the corresponding component of the second.
+	**/
 	@:op(a / b)
 	public inline function div(b:Vector2):Vector2
 		return untyped __lua__("{0} / {1}", this, b);
 
+	/**
+		Produces a Vector2 with each component multiplied by the number.
+	**/
 	@:op(a * b)
 	public inline function mulFloat(b:Float):Vector2
 		return untyped __lua__("{0} * {1}", this, b);
 
+	/**
+		Produces a Vector2 with each component divided by the number.
+	**/
 	@:op(a / b)
 	public inline function divFloat(b:Float):Vector2
 		return untyped __lua__("{0} / {1}", this, b);

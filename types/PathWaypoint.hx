@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The PathWaypoint data type is constructed by a Enum.PathWaypointAction action, Vector3 position, and string label which is used by the PathfindingService to create points along a generated path.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

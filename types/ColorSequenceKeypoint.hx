@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The ColorSequenceKeypoint data type represents a single keypoint in a ColorSequence. Each keypoint has a time position between 0 and 1 and a Color3 value that defines the color at that point in the sequence. Properties that use a ColorSequence, such as ParticleEmitter.Color, Beam.Color, and Trail.Color, interpolate linearly between consecutive keypoints in RGB color space.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

@@ -4,6 +4,15 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The ColorSequence data type represents a gradient of color values from 0 to 1. The color values are expressed using the ColorSequenceKeypoint type. This type is used in various properties of ParticleEmitter, Trail, Beam, and other objects that use color gradients.
+
+	#### Equality
+	Two ColorSequence objects are equivalent only if the values of their ColorSequenceKeypoint are equivalent, even if both would result in similar gradients.
+
+	#### Evaluation
+	The ColorSequence type does not have a built-in method for getting the value at a certain time/point. However, you can use the following function to evaluate at a specific time.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

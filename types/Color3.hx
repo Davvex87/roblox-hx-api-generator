@@ -5,6 +5,9 @@ import rblx.services.*;
 import rblx.enums.*;
 import rblx.BrickColor;
 
+/**
+	The Color3 data type describes a color using red, green, and blue components in the range of 0 to 1. Unlike the BrickColor data type which describes named colors, Color3 is used for precise coloring of objects on screen through properties like BasePart.Color and GuiObject.BackgroundColor3.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

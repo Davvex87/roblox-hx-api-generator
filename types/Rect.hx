@@ -4,6 +4,16 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	Rect describes a rectangle on a 2D plane. It is constructed using two corners, either two Vector2 positions or four numbers:
+
+	```lua
+	local rect1 = Rect.new(Vector2.new(10, 10), Vector2.new(80, 80))
+	local rect2 = Rect.new(10, 10, 80, 80)
+	```
+
+	This data type is used in the ImageLabel.SliceCenter property which determines the center area of a scaled image.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.enums.*;
 import rblx.services.*;
 
+/**
+	The Content data type represents a reference to asset content stored externally or as an object within the place, wrapping a single value of one of the supported Enum.ContentSourceType values.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

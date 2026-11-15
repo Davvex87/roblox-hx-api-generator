@@ -4,6 +4,19 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The Vector2int16 data type represents a vector in 2D space with a signed 16-bit integer for its components. It is similar to Vector2 in that it allows for the same arithmetic operations, but it lacks commonly used vector functions.
+
+	Vector2int16 should not be confused with:
+	- Vector2, a more precise and complete implementation for 2D vectors.
+	- Vector3int16, a similar implementation for 3D vectors.
+
+	For each component:
+	- The lower bound is -2^15, or **-32,768**.
+	- The upper bound is 2^15 − 1, or **32,767**.
+
+	@see https://create.roblox.com/docs/reference/engine/datatypes/Vector2int16
+**/
 @:forward
 @:forward.new
 @:forwardStatics

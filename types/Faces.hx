@@ -4,6 +4,16 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The Faces data type contains six booleans representing whether a feature is enabled for each face (Enum.NormalId) of a Part. In other words, this contains a boolean for each axes (X/Y/Z) in both directions (positive/negative). The Handles object uses this data type to enable whether a direction has a visible handle on a Part's face.
+
+	```lua
+	local handles = Instance.new("Handles")
+	handles.Faces = Faces.new(Enum.NormalId.Front, Enum.NormalId.Left)
+	```
+
+	Like most data types on Roblox, the Faces data type is immutable and you cannot assign to its properties once created.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

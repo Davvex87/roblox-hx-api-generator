@@ -4,6 +4,15 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	Describes the font used to render text. Every font consists of a font family, a weight like Enum.FontWeight.Bold, and a style like Enum.FontStyle.Italic.
+
+	Font families are a type of asset, like images or meshes. Each font family contains a number of font faces, and each face has a different weight and style.
+
+	Font is used by the TextLabel.FontFace, TextButton.FontFace, TextBox.FontFace, and similar properties. See also Enum.Font as an older alternative to this datatype that is required by some methods and properties.
+
+	@see https://create.roblox.com/docs/reference/engine/datatypes/Font
+**/
 @:forward
 @:forward.new
 @:forwardStatics

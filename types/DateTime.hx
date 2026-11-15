@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The DateTime data type represents a moment in time using a Unix timestamp. It can be used to easily format dates and times in specific locales. When converted to a string, a string conversion of the stored timestamp integer is returned. They don't store timezone values. Instead, timezones are considered when constructing and using DateTime objects.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

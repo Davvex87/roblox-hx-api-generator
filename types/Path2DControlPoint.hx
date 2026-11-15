@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The Path2DControlPoint data type represents a single control point used with the Path2D instance.
+**/
 @:forward
 @:forward.new
 @:forwardStatics

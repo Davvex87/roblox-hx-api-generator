@@ -4,6 +4,9 @@ import rblx.instances.*;
 import rblx.services.*;
 import rblx.enums.*;
 
+/**
+	The TweenInfo data type stores parameters for TweenService:Create() to specify the behavior of the tween. The properties of a TweenInfo cannot be written to after its creation.
+**/
 @:forward
 @:forward.new
 @:forwardStatics
